@@ -1,0 +1,34 @@
+{
+    "users": [
+      {
+        "id": "1",
+        "name": "이효석",
+        "hashtag": "#절약왕 #계획적인소비",
+        "totalExpense": 3200000,
+        "profileImage": "url"
+      }
+    ],
+    "transactions": [
+      {
+        "id": "1",
+        "userId": "1",
+        "title": "점심",
+        "category": "식비",
+        "date": "2024-04-08",
+        "time": "12:30",
+        "amount": 12000,
+        "memo": "라면",
+        "type": "expense",
+        "evaluation": "great"
+      }
+    ],
+    "emotions": [
+      {
+        "id": "1",
+        "userId": "1",
+        "date": "2024-04-08",
+        "emoji": "😊",
+        "note": "오늘도 열심히!"
+      }
+    ]
+  }
