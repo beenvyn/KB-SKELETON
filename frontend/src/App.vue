@@ -4,17 +4,6 @@ import MainPage from './pages/MainPage.vue';
 </script>
 
 <template>
-  <header>
-    <nav>
-      <RouterLink to="/">Home</RouterLink>
-      /
-      <RouterLink to="/signup">signup</RouterLink>
-      /
-      <RouterLink to="/login">login</RouterLink>
-      /
-    </nav>
-  </header>
-
   <RouterView />
 </template>
 

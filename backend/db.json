@@ -1,34 +1,38 @@
 {
-    "users": [
-      {
-        "id": "1",
-        "name": "이효석",
-        "hashtag": "#절약왕 #계획적인소비",
-        "totalExpense": 3200000,
-        "profileImage": "url"
-      }
-    ],
-    "transactions": [
-      {
-        "id": "1",
-        "userId": "1",
-        "title": "점심",
-        "category": "식비",
-        "date": "2024-04-08",
-        "time": "12:30",
-        "amount": 12000,
-        "memo": "라면",
-        "type": "expense",
-        "evaluation": "great"
-      }
-    ],
-    "emotions": [
-      {
-        "id": "1",
-        "userId": "1",
-        "date": "2024-04-08",
-        "emoji": "😊",
-        "note": "오늘도 열심히!"
-      }
-    ]
-  }
+  "users": [
+    {
+      "id": 1,
+      "username": "hyo",
+      "name": "이효석",
+      "password": "yourpwd",
+      "gender": "M",
+      "birth": "2000-04-08"
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "userId": 1,
+      "type": "expense",
+      "title": "점심",
+      "date": "2025-04-08",
+      "time": "10:00",
+      "amount": 12000,
+      "category": "식비",
+      "memo": "돈코츠라멘",
+      "evaluation": "great"
+    },
+    {
+      "id": "2",
+      "userId": "1",
+      "title": "커피",
+      "category": "카페",
+      "date": "2025-04-08",  
+      "time": "15:00",
+      "amount": 4500,
+      "memo": "스타벅스",
+      "type": "expense",
+      "evaluation": "good"
+    }
+  ]
+}
