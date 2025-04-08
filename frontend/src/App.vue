@@ -11,6 +11,8 @@ import MainPage from './pages/MainPage.vue';
       <RouterLink to="/signup">signup</RouterLink>
       /
       <RouterLink to="/detail">detail</RouterLink>
+      /
+      <RouterLink to="/statics">statics</RouterLink>
     </nav>
   </header>
 
