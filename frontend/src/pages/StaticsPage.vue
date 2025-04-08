@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <!-- 헤더 -->
     <header class="header">
       <div class="menu-icon">☰</div>
       <div class="logo">
@@ -9,26 +8,21 @@
       </div>
     </header>
 
-    <!-- 타이틀 -->
     <h2 class="title">월별 통계</h2>
 
-    <!-- 월 선택 -->
     <div class="month-selector">
       <button @click="changeMonth(-1)">&#60;</button>
       <span>{{ selectedYear }}년 {{ selectedMonth }}월</span>
       <button @click="changeMonth(1)">&#62;</button>
     </div>
 
-    <!-- 수입 / 지출 토글 -->
     <div class="toggle-buttons">
       <button :class="{ active: type === 'income' }" @click="type = 'income'">수입</button>
       <button :class="{ active: type === 'expense' }" @click="type = 'expense'">지출</button>
     </div>
 
-    <!-- 파이 차트 -->
     <canvas ref="chartCanvas"></canvas>
 
-    <!-- 플로팅 버튼 -->
     <button class="fab" @click="goToRecordPage">+</button>
   </div>
 </template>
@@ -40,8 +34,7 @@ const router = useRouter()
 import { ref, onMounted, watch } from 'vue'
 import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js'
 
-// Chart.js 등록
-Chart.register(PieController, ArcElement, Tooltip, Legend)
+Chart.register(PieController, ArcElement, Tooltip, Legend) // Chart.js 등록
 
 const chartCanvas = ref(null)
 let chartInstance = null
@@ -73,6 +66,7 @@ const incomeCategoryColors = { // 수입 카테고리 색상
   '공모전/상금': '#FF6384',
   '기타': '#FF9F40'
 }
+
 // 차트 데이터
 const chartData = ref({
   labels: [],
