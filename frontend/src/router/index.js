@@ -24,8 +24,8 @@ const router = createRouter({
       component: () => import("@/pages/RecordPage.vue"),
     },
     {
-      path: "/statics",
-      name: "statics",
+      path: "/stats",
+      name: "stats",
       component: () => import("@/pages/StaticsPage.vue"),
     },
     {
