@@ -67,24 +67,24 @@
       <div class="form-group">
         <label>생년월일</label>
         <div class="birth-inputs">
-          <input
-            v-model="form.birthYear"
-            type="number"
-            placeholder="년(4자)"
-            required
-          />
-          <input
-            v-model="form.birthMonth"
-            type="number"
-            placeholder="월"
-            required
-          />
-          <input
-            v-model="form.birthDay"
-            type="number"
-            placeholder="일"
-            required
-          />
+          <select v-model="form.birthYear" required>
+            <option disabled value="">년</option>
+            <option v-for="year in years" :key="year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+          <select v-model="form.birthMonth" required>
+            <option disabled value="">월</option>
+            <option v-for="month in 12" :key="month" :value="month">
+              {{ month }}
+            </option>
+          </select>
+          <select v-model="form.birthDay" required>
+            <option disabled value="">일</option>
+            <option v-for="day in daysInMonth" :key="day" :value="day">
+              {{ day }}
+            </option>
+          </select>
         </div>
       </div>
 
@@ -95,10 +95,15 @@
 
 <script setup>
 import axios from 'axios';
-import { reactive } from 'vue';
+import { reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+const currentYear = new Date().getFullYear();
+const years = computed(() =>
+  Array.from({ length: currentYear - 1925 + 1 }, (_, i) => currentYear - i)
+);
 
 const form = reactive({
   userId: '',
@@ -111,14 +116,24 @@ const form = reactive({
   birthDay: '',
 });
 
+const daysInMonth = computed(() => {
+  const year = Number(form.birthYear);
+  const month = Number(form.birthMonth);
+  if (!year || !month) return [];
+  const lastDay = new Date(year, month, 0).getDate();
+  return Array.from({ length: lastDay }, (_, i) => i + 1);
+});
+
 const submitForm = async () => {
   if (form.password !== form.confirmPassword) {
     alert('비밀번호가 일치하지 않습니다!');
     return;
   }
 
-  // 여기에서 날짜를 문자열 그대로 저장
-  const birth = `${form.birthYear}-${form.birthMonth}-${form.birthDay}`;
+  const birth = `${form.birthYear}-${String(form.birthMonth).padStart(
+    2,
+    '0'
+  )}-${String(form.birthDay).padStart(2, '0')}`;
 
   const userData = {
     username: form.userId,
@@ -183,7 +198,8 @@ label {
   font-weight: bold;
 }
 
-input {
+input,
+select {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
