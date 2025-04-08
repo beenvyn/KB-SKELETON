@@ -10,7 +10,6 @@
         😊
       </div>
     </header>
-
     <!-- Timeline -->
     <div class="timeline">
       <div
@@ -39,7 +38,7 @@ import axios from 'axios'
 
 const today = ref(formatDate(new Date()))
 const router = useRouter() 
-const transactions = ref([]) // ✅ 거래 내역 저장할 변수 선언!4
+const transactions = ref([]) // 거래 내역 저장할 변수 선언
 const totalAmount = computed(() => {
   return transactions.value.reduce((sum, item) => sum + item.amount, 0)
 })
@@ -79,11 +78,14 @@ const goToRecordPage = (id) => {
 
 <style scoped>
 .container {
-  max-width: 400px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
   font-family: sans-serif;
   background: #fdfaf3;
   padding: 20px;
+  box-sizing: border-box; 
+  min-height: 100vh; 
 }
 
 .header {
