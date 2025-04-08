@@ -67,24 +67,24 @@
       <div class="form-group">
         <label>생년월일</label>
         <div class="birth-inputs">
-          <input
-            v-model="form.birthYear"
-            type="number"
-            placeholder="년(4자)"
-            required
-          />
-          <input
-            v-model="form.birthMonth"
-            type="number"
-            placeholder="월"
-            required
-          />
-          <input
-            v-model="form.birthDay"
-            type="number"
-            placeholder="일"
-            required
-          />
+          <select v-model="form.birthYear" required>
+            <option disabled value="">년</option>
+            <option v-for="year in years" :key="year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+          <select v-model="form.birthMonth" required>
+            <option disabled value="">월</option>
+            <option v-for="month in 12" :key="month" :value="month">
+              {{ month }}
+            </option>
+          </select>
+          <select v-model="form.birthDay" required>
+            <option disabled value="">일</option>
+            <option v-for="day in daysInMonth" :key="day" :value="day">
+              {{ day }}
+            </option>
+          </select>
         </div>
       </div>
 
@@ -95,10 +95,15 @@
 
 <script setup>
 import axios from 'axios';
-import { reactive } from 'vue';
+import { reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+const currentYear = new Date().getFullYear();
+const years = computed(() =>
+  Array.from({ length: currentYear - 1925 + 1 }, (_, i) => currentYear - i)
+);
 
 const form = reactive({
   userId: '',
@@ -109,6 +114,14 @@ const form = reactive({
   birthYear: '',
   birthMonth: '',
   birthDay: '',
+});
+
+const daysInMonth = computed(() => {
+  const year = Number(form.birthYear);
+  const month = Number(form.birthMonth);
+  if (!year || !month) return [];
+  const lastDay = new Date(year, month, 0).getDate();
+  return Array.from({ length: lastDay }, (_, i) => i + 1);
 });
 
 const submitForm = async () => {
@@ -136,7 +149,7 @@ const submitForm = async () => {
     console.log('서버 응답:', response.data);
     router.push({ name: 'main' });
   } catch (e) {
-    alert('통신 ERR 발생');
+    alert('통신 오류 발생');
     console.error(e);
   }
 };
@@ -144,127 +157,97 @@ const submitForm = async () => {
 
 <style scoped>
 .container {
-  max-width: 390px; /* iPhone 16 Pro 기준 */
+  max-width: 430px;
   margin: 0 auto;
-  padding: 32px 20px;
+  height: 932px;
+  padding: 24px;
   background: #fdfaf3;
-  font-family: 'Helvetica Neue', sans-serif;
-  min-height: 100dvh;
-  box-sizing: border-box;
+  font-family: sans-serif;
+  text-align: center;
 }
 
-/* 로고 영역 */
 .logo-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .logo-image {
-  width: 120px;
-  height: auto;
+  width: 80px;
 }
 
 .logo-text {
-  margin-top: 12px;
+  margin: 8px 0;
   font-size: 24px;
-  font-weight: 700;
-  color: #222;
+  font-weight: bold;
 }
 
-/* 폼 */
 form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-/* 라벨 + 입력 그룹 */
 .form-group {
   text-align: left;
 }
 
 label {
   display: block;
-  margin-bottom: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #333;
+  margin-bottom: 4px;
+  font-weight: bold;
 }
 
-/* 입력창 */
-input[type='text'],
-input[type='password'],
-input[type='email'],
-input[type='number'] {
+input,
+select {
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  background: #fff;
-  font-size: 15px;
-  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: white;
+  font-size: 14px;
   outline: none;
+  margin-top: 4px;
 }
 
 input::placeholder {
-  color: #bbb;
+  color: #308f92;
 }
 
-/* 성별 버튼 */
 .gender-buttons {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .gender-buttons button {
   flex: 1;
-  padding: 12px;
-  border-radius: 10px;
+  padding: 8px;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  background-color: #fff;
-  font-size: 15px;
-  font-weight: 500;
-  color: #444;
+  background: white;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
 }
 
 .gender-buttons button.active {
   border-color: #308f92;
-  background-color: #e1f6f6;
   color: #308f92;
-  font-weight: 700;
+  font-weight: bold;
 }
 
-/* 생년월일 입력 */
 .birth-inputs {
   display: flex;
   gap: 8px;
 }
 
-.birth-inputs input {
-  flex: 1;
-  padding: 12px;
-  font-size: 15px;
-}
-
-/* 제출 버튼 */
 .submit-button {
   width: 100%;
-  padding: 14px;
-  font-size: 17px;
-  font-weight: bold;
-  background-color: #308f92;
+  background: #308f92;
   color: white;
   border: none;
-  border-radius: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.submit-button:hover {
-  background-color: #267c7e;
 }
 </style>

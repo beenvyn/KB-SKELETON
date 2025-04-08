@@ -86,13 +86,14 @@ function goToRegister() {
 }
 
 .container {
-  max-width: 100%;
+  max-width: 430px;
   width: 100%;
+  height: 932px;
+  margin: 0 auto;
   padding: 24px 20px;
   background: #fdfaf3;
   font-family: 'Helvetica Neue', sans-serif;
   text-align: center;
-  min-height: 100vh;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -146,7 +147,6 @@ input::placeholder {
   font-size: 17px;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
 .login-button:hover {
