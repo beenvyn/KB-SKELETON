@@ -10,6 +10,8 @@ import MainPage from './pages/MainPage.vue';
       /
       <RouterLink to="/signup">signup</RouterLink>
       /
+      <RouterLink to="/login">login</RouterLink>
+      /
     </nav>
   </header>
 

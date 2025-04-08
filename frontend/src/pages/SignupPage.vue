@@ -144,95 +144,127 @@ const submitForm = async () => {
 
 <style scoped>
 .container {
-  max-width: 400px;
+  max-width: 390px; /* iPhone 16 Pro 기준 */
   margin: 0 auto;
-  padding: 24px;
+  padding: 32px 20px;
   background: #fdfaf3;
-  font-family: sans-serif;
-  text-align: center;
+  font-family: 'Helvetica Neue', sans-serif;
+  min-height: 100dvh;
+  box-sizing: border-box;
 }
 
+/* 로고 영역 */
 .logo-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 }
 
 .logo-image {
-  width: 80px;
+  width: 120px;
+  height: auto;
 }
 
 .logo-text {
-  margin: 8px 0;
+  margin-top: 12px;
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 700;
+  color: #222;
 }
 
+/* 폼 */
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
+/* 라벨 + 입력 그룹 */
 .form-group {
   text-align: left;
 }
 
 label {
   display: block;
-  margin-bottom: 4px;
-  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
 }
 
-input {
+/* 입력창 */
+input[type='text'],
+input[type='password'],
+input[type='email'],
+input[type='number'] {
   width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background: white;
-  font-size: 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 15px;
+  box-sizing: border-box;
   outline: none;
-  margin-top: 4px;
 }
 
 input::placeholder {
-  color: #308f92;
+  color: #bbb;
 }
 
+/* 성별 버튼 */
 .gender-buttons {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 .gender-buttons button {
   flex: 1;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 10px;
   border: 1px solid #ccc;
-  background: white;
+  background-color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
 .gender-buttons button.active {
   border-color: #308f92;
+  background-color: #e1f6f6;
   color: #308f92;
-  font-weight: bold;
+  font-weight: 700;
 }
 
+/* 생년월일 입력 */
 .birth-inputs {
   display: flex;
   gap: 8px;
 }
 
+.birth-inputs input {
+  flex: 1;
+  padding: 12px;
+  font-size: 15px;
+}
+
+/* 제출 버튼 */
 .submit-button {
   width: 100%;
-  background: #308f92;
+  padding: 14px;
+  font-size: 17px;
+  font-weight: bold;
+  background-color: #308f92;
   color: white;
   border: none;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 12px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+  background-color: #267c7e;
 }
 </style>
