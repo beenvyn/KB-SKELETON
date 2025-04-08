@@ -1,0 +1,22 @@
+* {
+  font-family: Pretendard;
+}
+
+@font-face {
+  font-family: Gmarket;
+  src: url("/GmarketSansBold.otf");
+}
+
+@font-face {
+  font-family: Pretendard;
+  src: url("/Pretendard-Medium.woff");
+}
+
+:root {
+  --teal: #308f92;
+  --beige: #f5eedc;
+  --orange: #dea94b;
+  --green: #198754;
+  --red: #dc3545;
+  --shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
