@@ -25,7 +25,7 @@
             <span>{{ item.amount.toLocaleString() }}원</span>
             <span>{{ item.time }}</span>
           </div>
-          <button class="memo-button">메모하기</button>
+          <button class="memo-button" @click="goToRecordPage(item.id)">메모하기</button>
         </div>
       </div>
     </div>
@@ -34,8 +34,10 @@
 
 <script setup>
 import { ref } from 'vue'
+ import { useRouter } from 'vue-router'
 
 const today = ref(formatDate(new Date()))
+const router = useRouter() 
 
 function formatDate(date) {
   const year = date.getFullYear()
@@ -45,11 +47,14 @@ function formatDate(date) {
 }
 
 const transactions = [
-  { title: 'GS25 세종대점', amount: 1000, time: '08:40' },
-  { title: 'GS25 세종대점', amount: 1000, time: '10:00' },
-  { title: 'GS25 세종대점', amount: 1000, time: '12:00' },
-  { title: 'GS25 세종대점', amount: 1000, time: '18:34' },
+  { id: 1, title: 'GS25 세종대점', amount: 1000, time: '08:40' },
+  { id: 2, title: 'GS25 세종대점', amount: 1000, time: '10:00' },
+  { id: 3, title: 'GS25 세종대점', amount: 1000, time: '12:00' },
+  { id: 4, title: 'GS25 세종대점', amount: 1000, time: '18:34' },
 ]
+const goToRecordPage = (id) => {
+  router.push({ path: '/record', query: { transactionId: id } })
+}
 </script>
 
 <style scoped>
