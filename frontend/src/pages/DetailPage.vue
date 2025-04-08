@@ -66,7 +66,7 @@ onMounted(async () => {
   try {
     const todayString = getTodayDate()
     const res = await axios.get(`http://localhost:3000/transactions?userId=${userId}&date=${todayString}`)
-    transactions.value = res.data
+    transactions.value = res.data.filter(item => item.type === 'expense')
     console.log('오늘의 거래 내역:', transactions.value)
   } catch (error) {
     console.error('API 호출 실패:', error)
@@ -85,8 +85,8 @@ const goToRecordPage = (id) => {
   font-family: sans-serif;
   background: #fdfaf3;
   padding: 20px;
-  box-sizing: border-box; /* ✅ 패딩 포함 */
-  min-height: 100vh; /* ✅ 전체 화면 높이 */
+  box-sizing: border-box; 
+  min-height: 100vh; 
 }
 
 .header {
