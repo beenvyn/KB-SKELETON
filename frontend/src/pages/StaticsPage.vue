@@ -29,12 +29,14 @@
     <canvas ref="chartCanvas"></canvas>
 
     <!-- 플로팅 버튼 -->
-    <button class="fab" @click="addTransaction">+</button>
+    <button class="fab" @click="goToRecordPage">+</button>
   </div>
 </template>
 <script setup>
 import logo from '@/assets/logo.svg'
 import axios from 'axios'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 import { ref, onMounted, watch } from 'vue'
 import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js'
 
@@ -43,12 +45,13 @@ Chart.register(PieController, ArcElement, Tooltip, Legend)
 
 const chartCanvas = ref(null)
 let chartInstance = null
-
-// 상태
 const selectedYear = ref(2025)
 const selectedMonth = ref(4)
 const type = ref('income')
 const transactions = ref([])
+const goToRecordPage = (id) => {
+  router.push({ path: '/record', query: { transactionId: id } })
+}
 
 const expenseCategoryColors = { // 지출 카테고리 색상
   '저축/투자': '#4bc0c0',
@@ -61,7 +64,6 @@ const expenseCategoryColors = { // 지출 카테고리 색상
   '미용/패션': '#FFB1C1',
   '경조사': '#C9CBCF'
 }
-
 
 const incomeCategoryColors = { // 수입 카테고리 색상
   '알바비': '#4bc0c0',
@@ -80,7 +82,7 @@ const chartData = ref({
   }]
 })
 
-// ✅ 전체 거래 내역 가져오기
+// 전체 거래 내역 가져오기
 const fetchTransactions = async () => {
   try {
     const response = await axios.get('http://localhost:3000/transactions')
@@ -116,7 +118,7 @@ const updateChartData = () => {
     labels: categories,
     datasets: [{
       data: Object.values(categoryMap),
-      backgroundColor: categories.map(category => categoryColors[category] || '#cccccc') // fallback
+      backgroundColor: categories.map(category => categoryColors[category] || '#cccccc')
     }]
   }
   renderChart()
