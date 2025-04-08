@@ -22,10 +22,10 @@ const goBack = () => {
 <style scoped>
 .wrapper {
   width: 100%;
+  height: 60px;
   display: flex;
   align-items: center;
   position: relative;
-  padding: 0 20px;
 }
 
 .wrapper img {

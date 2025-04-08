@@ -4,11 +4,15 @@ import { RouterLink, RouterView } from "vue-router";
 import Navbar from "./components/common/Navbar.vue";
 </script>
 
-<template>
+<template class="container">
   <div>
     <Navbar />
     <RouterView />
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  padding: 0 20px;
+}
+</style>

@@ -32,7 +32,7 @@ const handleNavigate = (page) => {
 
 <style scoped>
 .wrapper {
-  height: 60px;
+  height: 80px;
   display: flex;
   align-items: center;
   padding: 0 20px;
