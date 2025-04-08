@@ -117,10 +117,8 @@ const submitForm = async () => {
     return;
   }
 
-  const birth = `${form.birthYear}-${String(form.birthMonth).padStart(
-    2,
-    '0'
-  )}-${String(form.birthDay).padStart(2, '0')}`;
+  // 여기에서 날짜를 문자열 그대로 저장
+  const birth = `${form.birthYear}-${form.birthMonth}-${form.birthDay}`;
 
   const userData = {
     username: form.userId,
@@ -136,7 +134,7 @@ const submitForm = async () => {
     console.log('서버 응답:', response.data);
     router.push({ name: 'main' });
   } catch (e) {
-    alert('통신 ERR 발생');
+    alert('통신 오류 발생');
     console.error(e);
   }
 };
