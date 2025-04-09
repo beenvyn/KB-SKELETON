@@ -3,43 +3,64 @@
     <div class="logo-wrapper">
       <img :src="logo" alt="logo" class="logo-image" />
     </div>
-    <div class="user-info">
-      <img :src="profile" alt="프로필 이미지" class="profile-image" />
-      <p class="user-name">{{ userName }}</p>
-    </div>
-    <div class="line" />
-    <nav class="menu">
-      <p class="menu-item" @click="goTo('main')">메인 페이지</p>
-      <p class="menu-item" @click="goTo('expense')">나의 가계부</p>
-      <p class="menu-item" @click="goTo('stats')">통계</p>
-      <p class="menu-item" @click="logout">로그아웃</p>
-    </nav>
+    <!-- 로그인 상태일 때 -->
+    <template v-if="isLoggedIn">
+      <div class="user-info">
+        <img :src="profile" alt="프로필 이미지" class="profile-image" />
+        <p class="user-name">{{ userName }}</p>
+      </div>
+      <div class="line" />
+      <nav class="menu">
+        <p class="menu-item" @click="goTo('main')">메인 페이지</p>
+        <p class="menu-item" @click="goTo('expense')">나의 가계부</p>
+        <p class="menu-item" @click="goTo('stats')">통계</p>
+        <p class="menu-item" @click="logout">로그아웃</p>
+      </nav>
+    </template>
+    <!-- 로그아웃 상태일 때 -->
+    <template v-else>
+      <div class="not-logged-in">
+        <p class="notice-text">로그인이 필요합니다</p>
+        <button class="login-button" @click="router.push('/login')">
+          로그인 하러 가기
+        </button>
+      </div>
+    </template>
     <div class="line" />
   </div>
 </template>
-
 <script setup>
-import { defineProps, defineEmits } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from 'vue';
+import { defineProps, defineEmits } from 'vue';
+import { useRouter } from 'vue-router';
 
-import logo from "../../assets/logo.svg";
-import profile from "../../assets/profile.png";
+import logo from '../../assets/logo.svg';
+import profile from '../../assets/profile.png';
 
 const props = defineProps({
   visible: Boolean,
 });
-const emit = defineEmits(["navigate", "logout"]);
+const emit = defineEmits(['navigate', 'logout']);
 
 const router = useRouter();
-const userName = "홍길동";
+const isLoggedIn = ref(false);
+const userName = ref('');
+
+onMounted(() => {
+  const loginId = localStorage.getItem('userId');
+  const storedUserName = localStorage.getItem('userName');
+  isLoggedIn.value = !!loginId;
+  userName.value = storedUserName || '';
+});
 
 const goTo = (page) => {
-  emit("navigate", page);
+  emit('navigate', page);
 };
 
 const logout = () => {
-  // 로그아웃 처리
-  router.push("/login");
+  localStorage.removeItem('userId');
+  localStorage.removeItem('userName');
+  router.push('/login');
 };
 </script>
 
