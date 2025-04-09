@@ -26,6 +26,7 @@ const goBack = () => {
   display: flex;
   align-items: center;
   position: relative;
+  margin-bottom: 10px;
 }
 
 .wrapper img {
