@@ -1,13 +1,21 @@
 <template>
   <div class="container">
     <header>
-      <Title text="나의 가계부" />
+      <img :src="arrow" alt="arrow" @click="goBack" />
+      <p class="title">나의 가계부</p>
       <div class="dropdown">
-        <button @click="toggleDropdown">카테고리별</button>
+        <button @click="toggleDropdown" :class="{ active: showDropdown }">
+          {{ selectedCategory || "카테고리별" }}
+        </button>
         <ul v-if="showDropdown" class="dropdown-list">
-          <li>저축/투자</li>
-          <li>교통</li>
-          <li>통신비</li>
+          <li
+            v-for="(category, index) in categories"
+            :key="index"
+            @click="selectCategory(category)"
+            :class="{ selected: selectedCategory === category }"
+          >
+            {{ category }}
+          </li>
         </ul>
       </div>
     </header>
@@ -66,15 +74,35 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import Title from "../components/common/Title.vue";
+import { useRouter } from "vue-router";
 import AddButton from "../components/common/AddButton.vue";
 
-import left from "../assets/chevron-left.svg";
-import right from "../assets/chevron-right.svg";
+import arrow from "@/assets/arrow-left.svg";
+import left from "@/assets/chevron-left.svg";
+import right from "@/assets/chevron-right.svg";
 
+const router = useRouter();
 const showDropdown = ref(false);
+const selectedCategory = ref(null);
 const selectedYear = ref(2025);
 const selectedMonth = ref(4);
+
+const categories = [
+  "저축/투자",
+  "식비",
+  "교통",
+  "통신비",
+  "교육",
+  "병원",
+  "문화생활",
+  "미용/패션",
+  "경조사",
+];
+
+const selectCategory = (category) => {
+  selectedCategory.value = category;
+  showDropdown.value = false;
+};
 
 const changeMonth = (delta) => {
   selectedMonth.value += delta;
@@ -91,6 +119,10 @@ const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
 };
 
+const goBack = () => {
+  router.go(-1);
+};
+
 watch([selectedYear, selectedMonth]);
 </script>
 
@@ -103,26 +135,65 @@ watch([selectedYear, selectedMonth]);
 header {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  padding: 15px 0;
+}
+
+header img {
+  cursor: pointer;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: bold;
+  font-family: Gmarket;
 }
 
 header button {
-  background-color: white;
   height: 50px;
   border: none;
   border-radius: 10px;
+  background-color: white;
+  width: 120px;
+  white-space: nowrap;
   padding: 6px 12px;
   color: var(--teal);
   font-size: 18px;
   cursor: pointer;
   white-space: nowrap;
   border: 2px solid var(--teal);
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
+}
+
+header button.active {
+  background-color: var(--teal);
+  color: white;
+}
+
+.dropdown {
+  position: relative;
 }
 
 .dropdown-list {
+  width: 100%;
   background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  position: absolute;
+  top: 60px;
   z-index: 100;
+}
+
+.dropdown-list li {
+  padding: 15px 10px;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  color: var(--teal);
+}
+
+.dropdown-list li.selected {
+  background-color: var(--teal);
+  color: white;
 }
 
 /* 수입/지출/합계 요약 박스 */
@@ -222,7 +293,6 @@ li {
   align-items: center;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 li:last-child {
