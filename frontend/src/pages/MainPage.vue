@@ -173,11 +173,13 @@ getUserTotalExpense();
 .user-name {
   margin: 0;
   color: #eee;
+  font-size: 24px;
 }
 
 .hashtags {
   margin: 4px 0;
   color: #eee;
+  font-size: 20px;
 }
 
 .hashtags-array {
@@ -214,7 +216,7 @@ getUserTotalExpense();
 }
 
 .my-expense-title {
-  font-size: 24px;
+  font-size: 30px;
   font-family: Gmarket;
 }
 
