@@ -22,15 +22,15 @@
     <section class="amount">
       <div class="profit">
         <p>수입</p>
-        <p>80,000원</p>
+        <p>{{ income.toLocaleString() }}원</p>
       </div>
       <div class="spending">
         <p>지출</p>
-        <p>60,000원</p>
+        <p>{{ expense.toLocaleString() }}원</p>
       </div>
       <div class="total">
         <p>합계</p>
-        <p>80,000원</p>
+        <p>{{ total.toLocaleString() }}원</p>
       </div>
     </section>
     <div class="date">
@@ -38,56 +38,57 @@
       <span>{{ selectedYear }}년 {{ selectedMonth }}월</span>
       <img :src="right" @click="changeMonth(1)" />
     </div>
-    <section>
+    <section v-for="(items, day) in groupedByDay" :key="day">
       <div class="top">
-        <p class="day">7일(월)</p>
-        <p class="green">+40,000원</p>
-        <p class="red">-10,000원</p>
+        <p class="day">{{ day }}일</p>
+        <p class="green">
+          +{{
+            items
+              .filter((i) => i.type === "income")
+              .reduce((a, c) => a + c.amount, 0)
+              .toLocaleString()
+          }}원
+        </p>
+        <p class="red">
+          -{{
+            items
+              .filter((i) => i.type === "expense")
+              .reduce((a, c) => a + c.amount, 0)
+              .toLocaleString()
+          }}원
+        </p>
       </div>
       <ul class="box">
-        <li>
+        <li v-for="item in items" :key="item.id">
           <div class="info">
-            <p>gs25 세종대점</p>
-            <p>08:00</p>
+            <p>{{ item.title }}</p>
+            <p>{{ item.time }}</p>
           </div>
-          <p>3,500원</p>
-        </li>
-        <li>
-          <div class="info">
-            <p>gs25 세종대점</p>
-            <p>08:00</p>
-          </div>
-          <p>3,500원</p>
-        </li>
-        <li>
-          <div class="info">
-            <p>gs25 세종대점</p>
-            <p>08:00</p>
-          </div>
-          <p>3,500원</p>
+          <p>{{ item.amount.toLocaleString() }}원</p>
         </li>
       </ul>
     </section>
+
     <AddButton />
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
+
 import AddButton from "../components/common/AddButton.vue";
 
 import arrow from "@/assets/arrow-left.svg";
 import left from "@/assets/chevron-left.svg";
 import right from "@/assets/chevron-right.svg";
 
-const router = useRouter();
-const showDropdown = ref(false);
-const selectedCategory = ref(null);
-const selectedYear = ref(2025);
-const selectedMonth = ref(4);
+const BASE_URL = "/api";
+const transactionUrl = BASE_URL + "/transactions";
 
 const categories = [
+  "전체",
   "저축/투자",
   "식비",
   "교통",
@@ -99,8 +100,53 @@ const categories = [
   "경조사",
 ];
 
+const router = useRouter();
+const showDropdown = ref(false);
+const selectedCategory = ref(null);
+const selectedYear = ref(2025);
+const selectedMonth = ref(4);
+
+const transactions = ref([]);
+const userId = ref(1);
+
+// 데이터 가져오기
+const fetchTransactions = async () => {
+  const res = await axios.get(`${transactionUrl}?userId=${userId.value}`);
+  transactions.value = res.data.filter(
+    (t) =>
+      t.userId === userId.value &&
+      new Date(t.date).getFullYear() === selectedYear.value &&
+      new Date(t.date).getMonth() + 1 === selectedMonth.value &&
+      (!selectedCategory.value || t.category === selectedCategory.value)
+  );
+};
+
+const groupedByDay = computed(() => {
+  const group = {};
+  transactions.value.forEach((t) => {
+    const day = new Date(t.date).getDate();
+    if (!group[day]) group[day] = [];
+    group[day].push(t);
+  });
+  return group;
+});
+
+const income = computed(() =>
+  transactions.value
+    .filter((t) => t.type === "income")
+    .reduce((acc, cur) => acc + cur.amount, 0)
+);
+
+const expense = computed(() =>
+  transactions.value
+    .filter((t) => t.type === "expense")
+    .reduce((acc, cur) => acc + cur.amount, 0)
+);
+
+const total = computed(() => income.value - expense.value);
+
 const selectCategory = (category) => {
-  selectedCategory.value = category;
+  selectedCategory.value = category === "전체" ? null : category;
   showDropdown.value = false;
 };
 
@@ -123,7 +169,9 @@ const goBack = () => {
   router.go(-1);
 };
 
-watch([selectedYear, selectedMonth]);
+onMounted(fetchTransactions);
+
+watch([selectedYear, selectedMonth, selectedCategory], fetchTransactions);
 </script>
 
 <style scoped>
@@ -188,7 +236,9 @@ header button.active {
   padding: 15px 10px;
   font-size: 18px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
   color: var(--teal);
+  cursor: pointer;
 }
 
 .dropdown-list li.selected {
