@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar" v-if="visible">
     <div class="logo-wrapper">
-      <img :src="logo" alt="logo" class="logo-image" />
+      <img :src="logo" alt="logo" class="logo-image" @click="goTo('main')" />
     </div>
     <!-- 로그인 상태일 때 -->
     <template v-if="isLoggedIn">
