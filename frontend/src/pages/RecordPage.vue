@@ -137,6 +137,7 @@ async function submitForm() {
   background: #fdfaf3;
   padding: 20px;
   position: relative;
+  min-height: 100vh;
 }
 
 .logo {

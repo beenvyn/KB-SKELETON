@@ -3,26 +3,28 @@
     <!-- User Info -->
     <section class="user-info">
       <img class="profile-img" src="@/assets/profile.png" alt="프로필 이미지" />
-      <h2>{{ user.name }}</h2>
-      <p class="hashtags">{{ user.hashtags }}</p>
-
-      <div class="total-expense">
-        <div>총 지출</div>
-        <div class="amount">{{ user.totalExpense.toLocaleString() }}원</div>
+      <div class="user-text">
+        <h2 class="user-name">{{ user.name }}</h2>
+        <p class="hashtags">{{ user.hashtags }}</p>
       </div>
     </section>
 
+    <div class="total-expense">
+      <div>총 지출</div>
+      <div class="amount">{{ user.totalExpense.toLocaleString() }}원</div>
+    </div>
+
     <!-- My Ledger -->
     <section class="ledger-section">
-      <h3>나의 가계부</h3>
+      <h3 style="font-size: 24px">나의 가계부</h3>
 
       <div class="menu-list">
         <div class="menu-item" @click="goTo('list')">
-          <span>목록 보기</span>
+          <span>가계부 보기</span>
           <span>></span>
         </div>
-        <div class="menu-item" @click="goTo('category')">
-          <span>카테고리 보기</span>
+        <div class="menu-item" @click="goTo('record')">
+          <span>기록하기</span>
           <span>></span>
         </div>
         <div class="menu-item" @click="goTo('stats')">
@@ -31,9 +33,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Floating Action Button -->
-    <button class="fab">+</button>
   </div>
 </template>
 
@@ -44,7 +43,6 @@ import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
 
-// 사용자 정보 (추후 API 연동 가능)
 const user = ref({
   name: '홍길동',
   hashtags: '#20대 #무지출',
@@ -56,8 +54,9 @@ const goTo = (page) => {
   if (page === 'list') {
     console.log('목록 보기로 이동');
     router.push({ name: 'expense' });
-  } else if (page === 'category') {
-    console.log('카테고리 보기로 이동');
+  } else if (page === 'record') {
+    console.log('기록하기로 이동');
+    router.push({ name: 'record' });
   } else if (page === 'stats') {
     console.log('통계 보기로 이동');
     router.push({ name: 'stats' });
@@ -74,38 +73,37 @@ const goTo = (page) => {
   background: #fdfaf3;
   padding: 20px;
   position: relative;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  color: #308f92;
-}
-
-.logo img {
-  width: 32px;
-  margin-right: 8px;
-}
-
-.menu-icon {
-  font-size: 24px;
-  cursor: pointer;
+  min-height: 100vh;
 }
 
 .user-info {
+  margin-bottom: 40px;
   background: #308f92;
   color: white;
   text-align: center;
   padding: 16px;
   border-radius: 8px;
-  margin-top: 16px;
+  display: flex; /* ✨ 가로로 정렬 */
+  align-items: center;
+  height: 230px;
+  position: relative;
 }
 
 .profile-img {
-  width: 64px;
+  /* width: 64px; */
   border-radius: 50%;
-  margin-bottom: 8px;
+  margin-right: 20px;
+}
+.user-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+}
+
+.user-name {
+  margin: 0;
+  color: #eee;
 }
 
 .hashtags {
@@ -114,14 +112,22 @@ const goTo = (page) => {
 }
 
 .total-expense {
+  text-align: center;
   background: white;
   color: black;
   display: flex;
   justify-content: space-between;
-  padding: 12px;
   border-radius: 8px;
-  margin-top: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 210px;
+  width: 550px;
+  height: 90px;
+  padding: 12px 36px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  align-items: center;
+  font-size: 20px;
 }
 
 .amount {
@@ -129,7 +135,7 @@ const goTo = (page) => {
 }
 
 .ledger-section {
-  margin-top: 24px;
+  margin-top: 84px;
 }
 
 .menu-list {
@@ -137,13 +143,15 @@ const goTo = (page) => {
 }
 
 .menu-item {
+  height: 80px;
   background: white;
   border-radius: 8px;
   padding: 12px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
 
