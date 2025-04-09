@@ -1,10 +1,9 @@
 <template>
   <div class="container">
-    <!-- 로고 -->
-    <div class="logo-wrapper">
-      <img src="../assets/logo.svg" alt="로고" class="logo-image" />
-      <h1 class="logo-text">회원가입</h1>
-    </div>
+    <header>
+      <img :src="logoImg" alt="logo" />
+      <p>회원가입</p>
+    </header>
 
     <!-- 폼 -->
     <form @submit.prevent="submitForm">
@@ -94,9 +93,12 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-import { reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import axios from "axios";
+import { reactive, computed } from "vue";
+import { useRouter } from "vue-router";
+
+import Title from "../components/common/Title.vue";
+import logoImg from "@/assets/logo-img.svg";
 
 const router = useRouter();
 
@@ -106,14 +108,14 @@ const years = computed(() =>
 );
 
 const form = reactive({
-  userId: '',
-  password: '',
-  confirmPassword: '',
-  name: '',
-  gender: '',
-  birthYear: '',
-  birthMonth: '',
-  birthDay: '',
+  userId: "",
+  password: "",
+  confirmPassword: "",
+  name: "",
+  gender: "",
+  birthYear: "",
+  birthMonth: "",
+  birthDay: "",
 });
 
 const daysInMonth = computed(() => {
@@ -126,30 +128,30 @@ const daysInMonth = computed(() => {
 
 const submitForm = async () => {
   if (form.password !== form.confirmPassword) {
-    alert('비밀번호가 일치하지 않습니다!');
+    alert("비밀번호가 일치하지 않습니다!");
     return;
   }
 
   const birth = `${form.birthYear}-${String(form.birthMonth).padStart(
     2,
-    '0'
-  )}-${String(form.birthDay).padStart(2, '0')}`;
+    "0"
+  )}-${String(form.birthDay).padStart(2, "0")}`;
 
   const userData = {
     username: form.userId,
     password: form.password,
     name: form.name,
-    gender: form.gender === 'male' ? 'M' : 'F',
+    gender: form.gender === "male" ? "M" : "F",
     birth,
   };
 
   try {
-    const response = await axios.post('/api/users', userData);
-    alert('회원가입이 완료되었습니다!');
-    console.log('서버 응답:', response.data);
-    router.push({ name: 'main' });
+    const response = await axios.post("/api/users", userData);
+    alert("회원가입이 완료되었습니다!");
+    console.log("서버 응답:", response.data);
+    router.push({ name: "main" });
   } catch (e) {
-    alert('통신 오류 발생');
+    alert("통신 오류 발생");
     console.error(e);
   }
 };
@@ -157,62 +159,59 @@ const submitForm = async () => {
 
 <style scoped>
 .container {
-  max-width: 430px;
-  margin: 0 auto;
-  height: 932px;
-  padding: 24px;
-  background: #fdfaf3;
-  font-family: sans-serif;
-  text-align: center;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--beige);
+  padding-top: 20px;
 }
 
-.logo-wrapper {
+header {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 16px;
+  gap: 15px;
+  margin-bottom: 40px;
 }
 
-.logo-image {
-  width: 80px;
-}
-
-.logo-text {
-  margin: 8px 0;
-  font-size: 24px;
+header p {
+  font-size: 30px;
+  font-family: Gmarket;
   font-weight: bold;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 25px;
+  font-size: 20px;
 }
 
 .form-group {
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 label {
   display: block;
-  margin-bottom: 4px;
-  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 input,
 select {
   width: 100%;
-  padding: 10px;
+  padding: 15px 10px;
   border-radius: 8px;
   border: none;
   background: white;
-  font-size: 14px;
+  font-size: 20px;
   outline: none;
-  margin-top: 4px;
 }
 
 input::placeholder {
-  color: #308f92;
+  color: var(--teal);
 }
 
 .gender-buttons {
@@ -222,17 +221,17 @@ input::placeholder {
 
 .gender-buttons button {
   flex: 1;
-  padding: 8px;
+  padding: 15px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--teal);
   background: white;
+  font-size: 20px;
   cursor: pointer;
 }
 
 .gender-buttons button.active {
-  border-color: #308f92;
-  color: #308f92;
-  font-weight: bold;
+  background-color: var(--teal);
+  color: white;
 }
 
 .birth-inputs {
@@ -242,12 +241,12 @@ input::placeholder {
 
 .submit-button {
   width: 100%;
-  background: #308f92;
+  background: var(--teal);
   color: white;
   border: none;
-  padding: 12px;
+  padding: 15px;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 20px;
   cursor: pointer;
 }
 </style>
