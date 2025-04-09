@@ -5,12 +5,20 @@
       <img class="profile-img" src="@/assets/profile.png" alt="프로필 이미지" />
       <div class="user-text">
         <h2 class="user-name">{{ user.name }}</h2>
-        <p class="hashtags">{{ user.hashtags }}</p>
+        <div class="hashtags-array">
+          <p
+            class="hashtags"
+            v-for="(hashtag, idx) in user.hashtags"
+            :key="idx"
+          >
+            {{ hashtag }}
+          </p>
+        </div>
       </div>
     </section>
 
     <div class="total-expense">
-      <div>총 지출</div>
+      <div>이번달 총 지출</div>
       <div class="amount">{{ user.totalExpense.toLocaleString() }}원</div>
     </div>
 
@@ -42,12 +50,71 @@ import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
+const BASE_URL = '/api';
+const userId = localStorage.getItem('userId');
 
 const user = ref({
-  name: '홍길동',
-  hashtags: '#20대 #무지출',
-  totalExpense: 600000,
+  name: '',
+  hashtags: ['', ''],
+  totalExpense: 0,
 });
+
+function getAgeGroup(birth) {
+  const today = new Date();
+  const birthDate = new Date(birth);
+
+  const age = today.getFullYear() - birthDate.getFullYear() + 1;
+  console.log('🚀 ~ getAgeGroup ~ age:', age);
+
+  const ageGroup = Math.floor(age / 10) * 10;
+  return `${ageGroup}대`;
+}
+
+async function getUserInfo() {
+  try {
+    const res = await axios.get(BASE_URL + `/users/${userId}`);
+    console.log('유저 정보 가지고 오기 통신 결과 데이터', res.data);
+
+    user.value.name = res.data.name;
+    user.value.hashtags[0] = `# ${getAgeGroup(res.data.birth)}`;
+    user.value.hashtags[1] = `# ${res.data.gender == 'M' ? '남자' : '여자'}`;
+  } catch (e) {
+    alert('통신 에러 발생');
+    console.error(e);
+  }
+}
+
+async function getUserTotalExpense() {
+  try {
+    const res = await axios.get(
+      BASE_URL + `/transactions?userId=${userId}&type=expense`
+    );
+    console.log('총 지출 통신 결과', res);
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    const thisMonthExpenses = res.data.filter((item) => {
+      const [year, month] = item.date.split('-');
+      return parseInt(year) === currentYear && parseInt(month) === currentMonth;
+    });
+
+    const totalAmount = thisMonthExpenses.reduce((sum, item) => {
+      if (item.amount) {
+        return sum + (item.amount || 0);
+      }
+      return sum;
+    }, 0);
+
+    console.log(`이번 달 총 지출: ${totalAmount.toLocaleString()}원`);
+
+    user.value.totalExpense = totalAmount;
+  } catch (e) {
+    alert('통신 에러 발생');
+    console.error(e);
+  }
+}
 
 // 페이지 이동 함수
 const goTo = (page) => {
@@ -62,6 +129,9 @@ const goTo = (page) => {
     router.push({ name: 'stats' });
   }
 };
+
+getUserInfo();
+getUserTotalExpense();
 </script>
 
 <style scoped>
@@ -83,14 +153,13 @@ const goTo = (page) => {
   text-align: center;
   padding: 16px;
   border-radius: 8px;
-  display: flex; /* ✨ 가로로 정렬 */
+  display: flex;
   align-items: center;
   height: 230px;
   position: relative;
 }
 
 .profile-img {
-  /* width: 64px; */
   border-radius: 50%;
   margin-right: 20px;
 }
@@ -109,6 +178,12 @@ const goTo = (page) => {
 .hashtags {
   margin: 4px 0;
   color: #eee;
+}
+
+.hashtags-array {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .total-expense {

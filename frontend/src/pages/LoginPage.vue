@@ -74,6 +74,7 @@ async function login() {
 
     localStorage.setItem('userId', findUser.id); // userId 저장
     localStorage.setItem('userName', findUser.name); // userId 저장
+
     alert('로그인 성공!');
     router.push({ name: 'main' }).then(() => {
       location.reload(); // 새로고침
