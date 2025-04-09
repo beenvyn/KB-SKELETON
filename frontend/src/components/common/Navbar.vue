@@ -1,10 +1,8 @@
 <template>
   <div class="wrapper">
-    <img class="hamburger" :src="hamburger" alt="menu" @click="toggleSidebar" />
+    <i class="fa-solid fa-bars" @click="toggleSidebar" />
     <img class="logo" :src="logo" alt="logo" />
-
     <div v-if="isOpen" class="overlay" @click="toggleSidebar"></div>
-
     <Sidebar :visible="isOpen" @navigate="handleNavigate" />
   </div>
 </template>
@@ -13,7 +11,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import hamburger from "../../assets/hamburger.svg";
 import logo from "../../assets/logo.svg";
 import Sidebar from "./Sidebar.vue";
 
@@ -40,6 +37,11 @@ const handleNavigate = (page) => {
 
   min-width: 500px;
   max-width: 700px;
+}
+
+.wrapper i {
+  font-size: 25px;
+  cursor: pointer;
 }
 
 .hamburger {
