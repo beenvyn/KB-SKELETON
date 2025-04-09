@@ -1,7 +1,13 @@
 <template>
   <div class="wrapper">
     <img class="hamburger" :src="hamburger" alt="menu" @click="toggleSidebar" />
-    <img class="logo" :src="logo" alt="logo" />
+    <img
+      class="logo"
+      :src="logo"
+      alt="logo"
+      @click="goToMain"
+      style="cursor: pointer"
+    />
 
     <div v-if="isOpen" class="overlay" @click="toggleSidebar"></div>
 
@@ -10,12 +16,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import hamburger from "../../assets/hamburger.svg";
-import logo from "../../assets/logo.svg";
-import Sidebar from "./Sidebar.vue";
+import hamburger from '../../assets/hamburger.svg';
+import logo from '../../assets/logo.svg';
+import Sidebar from './Sidebar.vue';
 
 const router = useRouter();
 const isOpen = ref(false);
@@ -27,6 +33,10 @@ const toggleSidebar = () => {
 const handleNavigate = (page) => {
   isOpen.value = false;
   router.push(`/${page}`);
+};
+
+const goToMain = () => {
+  router.push({ name: 'main' });
 };
 </script>
 
