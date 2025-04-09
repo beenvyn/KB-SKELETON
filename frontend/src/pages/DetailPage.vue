@@ -29,6 +29,7 @@
             <span>{{ item.time }}</span>
           </div>
           <button
+            v-if="!item.memo"
             class="btn btn-outline-secondary btn-sm memo-button"
             @click="goToRecordPage(item.id)"
           >
