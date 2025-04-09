@@ -7,6 +7,14 @@
       "password": "yourpwd",
       "gender": "M",
       "birth": "2000-04-08"
+    },
+    {
+      "id": "e0e9",
+      "username": "test",
+      "password": "123",
+      "name": "lee",
+      "gender": "F",
+      "birth": "2025-01-03"
     }
   ],
   "transactions": [

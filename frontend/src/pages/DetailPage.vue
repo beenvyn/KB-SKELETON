@@ -63,9 +63,14 @@ function getTodayDate() { // 오늘 날짜 포맷
 }
 
 
-const userId = '1' //  유저 ID (지금은 1번 사용자로 임시 설정)
+const userId = localStorage.getItem('userId'); //  유저 ID 받아옴
 
 onMounted(async () => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    router.push({ name: 'login' }); // 로그인 페이지로 이동
+    return;
+  }
   try {
     const todayString = getTodayDate()
     const res = await axios.get(`http://localhost:3000/transactions?userId=${userId}&date=${todayString}`)
