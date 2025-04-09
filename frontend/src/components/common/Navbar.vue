@@ -69,6 +69,7 @@ const goToMain = () => {
   transform: translateX(-50%);
   width: 140px;
   height: auto;
+  pointer-events: none;
 }
 
 .overlay {
