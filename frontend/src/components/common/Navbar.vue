@@ -11,8 +11,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import logo from "../../assets/logo.svg";
-import Sidebar from "./Sidebar.vue";
+import logo from '../../assets/logo.svg';
+import Sidebar from './Sidebar.vue';
+
 
 const router = useRouter();
 const isOpen = ref(false);
@@ -76,5 +77,9 @@ const goToMain = () => {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.3);
   z-index: 99;
+}
+
+img {
+  cursor: pointer;
 }
 </style>

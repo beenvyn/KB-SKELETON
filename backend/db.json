@@ -136,7 +136,7 @@
       "amount": 3000000,
       "memo": "4월 알바비",
       "type": "income",
-      "evaluation": "great"
+      "evaluation": ""
     },
     {
       "id": "11",
@@ -148,7 +148,7 @@
       "amount": 500000,
       "memo": "부모님 용돈",
       "type": "income",
-      "evaluation": "good"
+      "evaluation": ""
     },
     {
       "id": "12",
@@ -160,7 +160,7 @@
       "amount": 1000000,
       "memo": "성적 우수 장학금",
       "type": "income",
-      "evaluation": "great"
+      "evaluation": ""
     },
     {
       "id": "13",
@@ -172,7 +172,7 @@
       "amount": 150000,
       "memo": "주식 배당금",
       "type": "income",
-      "evaluation": "great"
+      "evaluation": ""
     },
     {
       "id": "14",
@@ -184,7 +184,7 @@
       "amount": 300000,
       "memo": "아이디어 공모전",
       "type": "income",
-      "evaluation": "great"
+      "evaluation": ""
     },
     {
       "id": "15",
@@ -196,7 +196,7 @@
       "amount": 50000,
       "memo": "중고거래",
       "type": "income",
-      "evaluation": "good"
+      "evaluation": ""
     },
     {
       "id": "16",
@@ -316,7 +316,7 @@
       "amount": 3100000,
       "memo": "5월 알바비",
       "type": "income",
-      "evaluation": "great"
+      "evaluation": ""
     },
     {
       "id": "26",
@@ -328,7 +328,7 @@
       "amount": 400000,
       "memo": "부모님 용돈",
       "type": "income",
-      "evaluation": "good"
+      "evaluation": ""
     },
     {
       "id": "27",
@@ -340,7 +340,7 @@
       "amount": 1200000,
       "memo": "성적 우수 장학금",
       "type": "income",
-      "evaluation": "great"
+      "evaluation": ""
     },
     {
       "id": "28",
@@ -352,7 +352,7 @@
       "amount": 200000,
       "memo": "주식 매도 수익",
       "type": "income",
-      "evaluation": "great"
+      "evaluation": ""
     },
     {
       "id": "29",
@@ -364,7 +364,7 @@
       "amount": 500000,
       "memo": "디자인 공모전",
       "type": "income",
-      "evaluation": "great"
+      "evaluation": ""
     },
     {
       "id": "30",
@@ -376,7 +376,7 @@
       "amount": 80000,
       "memo": "중고 거래 수익",
       "type": "income",
-      "evaluation": "good"
+      "evaluation": ""
     },
     {
       "id": "8013",
