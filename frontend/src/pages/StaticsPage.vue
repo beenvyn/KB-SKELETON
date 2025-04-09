@@ -1,206 +1,198 @@
 <template>
   <div class="container">
-    <header class="header">
-      <div class="menu-icon">☰</div>
-      <div class="logo">
-        <img :src="logo" alt="SSook 로고" />
-        <span>SSook</span>
-      </div>
-    </header>
-
-    <h2 class="title">월별 통계</h2>
-
+    <Title text="월별 통계" />
     <div class="month-selector">
-      <button @click="changeMonth(-1)">&#60;</button>
+      <img :src="left" @click="changeMonth(-1)" />
       <span>{{ selectedYear }}년 {{ selectedMonth }}월</span>
-      <button @click="changeMonth(1)">&#62;</button>
+      <img :src="right" @click="changeMonth(1)" />
     </div>
 
     <div class="toggle-buttons">
-      <button :class="{ active: type === 'income' }" @click="type = 'income'">수입</button>
-      <button :class="{ active: type === 'expense' }" @click="type = 'expense'">지출</button>
+      <button :class="{ active: type === 'income' }" @click="type = 'income'">
+        수입
+      </button>
+      <button :class="{ active: type === 'expense' }" @click="type = 'expense'">
+        지출
+      </button>
     </div>
 
-    <canvas ref="chartCanvas"></canvas>
-
-    <button class="fab" @click="goToRecordPage">+</button>
+    <canvas ref="chartCanvas" />
+    <AddButton />
   </div>
 </template>
 <script setup>
-import logo from '@/assets/logo.svg'
-import axios from 'axios'
-import { useRouter } from 'vue-router'
-const router = useRouter()
-import { ref, onMounted, watch } from 'vue'
-import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js'
+import { ref, onMounted, watch } from "vue";
+import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
+import axios from "axios";
+import { useRouter } from "vue-router";
 
-Chart.register(PieController, ArcElement, Tooltip, Legend) // Chart.js 등록
+import Title from "../components/common/Title.vue";
+import AddButton from "../components/common/AddButton.vue";
 
-const chartCanvas = ref(null)
-let chartInstance = null
-const selectedYear = ref(2025)
-const selectedMonth = ref(4)
-const type = ref('income')
-const transactions = ref([])
-const goToRecordPage = (id) => {
-  router.push({ path: '/record', query: { transactionId: id } })
-}
+import left from "@/assets/chevron-left.svg";
+import right from "@/assets/chevron-right.svg";
 
-const expenseCategoryColors = { // 지출 카테고리 색상
-  '저축/투자': '#4bc0c0',
-  '식비': '#ffcd56',
-  '교통': '#36a2eb',
-  '통신비': '#9966FF',
-  '교육': '#FF6384',
-  '병원': '#FF9F40',
-  '문화생활': '#FF6384',
-  '미용/패션': '#FFB1C1',
-  '경조사': '#C9CBCF'
-}
+Chart.register(PieController, ArcElement, Tooltip, Legend); // Chart.js 등록
 
-const incomeCategoryColors = { // 수입 카테고리 색상
-  '알바비': '#4bc0c0',
-  '용돈': '#FFCD56',
-  '장학금': '#36a2eb',
-  '투자 수익': '#9966FF',
-  '공모전/상금': '#FF6384',
-  '기타': '#FF9F40'
-}
+const chartCanvas = ref(null);
+let chartInstance = null;
+const selectedYear = ref(2025);
+const selectedMonth = ref(4);
+const type = ref("income");
+const transactions = ref([]);
+
+const expenseCategoryColors = {  // 지출 카테고리 색상
+  "저축/투자": "#4bc0c0",
+  식비: "#ffcd56",
+  교통: "#36a2eb",
+  통신비: "#9966FF",
+  교육: "#FF6384",
+  병원: "#FF9F40",
+  문화생활: "#FF6384",
+  "미용/패션": "#FFB1C1",
+  경조사: "#C9CBCF",
+};
+
+const incomeCategoryColors = {  // 수입 카테고리 색상
+  알바비: "#4bc0c0",
+  용돈: "#FFCD56",
+  장학금: "#36a2eb",
+  "투자 수익": "#9966FF",
+  "공모전/상금": "#FF6384",
+  기타: "#FF9F40",
+};
 
 // 차트 데이터
 const chartData = ref({
   labels: [],
-  datasets: [{
-    data: [],
-    backgroundColor: ['#dcbe7f', '#d1f7ec', '#e0f7f4', '#ffcd56', '#4bc0c0', '#36a2eb']
-  }]
-})
+  datasets: [
+    {
+      data: [],
+      backgroundColor: [
+        "#dcbe7f",
+        "#d1f7ec",
+        "#e0f7f4",
+        "#ffcd56",
+        "#4bc0c0",
+        "#36a2eb",
+      ],
+    },
+  ],
+});
+
+const router = useRouter();
+
+onMounted(async () => {
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    await router.push({ name: "login" });
+    return; 
+  }
+  await fetchTransactions(userId);
+});
+
+
 
 // 전체 거래 내역 가져오기
-const fetchTransactions = async () => {
+const fetchTransactions = async (userId) => {
   try {
-    const response = await axios.get('http://localhost:3000/transactions')
-    transactions.value = response.data
-    console.log('전체 거래 내역:', transactions.value)
-    updateChartData()
+    const response = await axios.get(`http://localhost:3000/transactions?userId=${userId}`);
+    transactions.value = response.data;
+    console.log("전체 거래 내역:", transactions.value);
+    updateChartData();
   } catch (error) {
-    console.error('거래 내역 가져오기 실패:', error)
+    console.error("거래 내역 가져오기 실패:", error);
   }
-}
+};
 const updateChartData = () => {
-  const month = String(selectedMonth.value).padStart(2, '0')
-  const year = selectedYear.value
+  const month = String(selectedMonth.value).padStart(2, "0");
+  const year = selectedYear.value;
 
-  const filtered = transactions.value.filter(item => {
-    return item.date.startsWith(`${year}-${month}`) && item.type === type.value
-  })
+  const filtered = transactions.value.filter((item) => {
+    return item.date.startsWith(`${year}-${month}`) && item.type === type.value;
+  });
 
-  const categoryMap = {}
+  const categoryMap = {};
 
-  filtered.forEach(item => {
+  filtered.forEach((item) => {
     if (!categoryMap[item.category]) {
-      categoryMap[item.category] = 0
+      categoryMap[item.category] = 0;
     }
-    categoryMap[item.category] += item.amount
-  })
+    categoryMap[item.category] += item.amount;
+  });
 
-  const categories = Object.keys(categoryMap)
+  const categories = Object.keys(categoryMap);
 
-  const categoryColors = type.value === 'income' ? incomeCategoryColors : expenseCategoryColors
+  const categoryColors =
+    type.value === "income" ? incomeCategoryColors : expenseCategoryColors;
 
   chartData.value = {
     labels: categories,
-    datasets: [{
-      data: Object.values(categoryMap),
-      backgroundColor: categories.map(category => categoryColors[category] || '#cccccc')
-    }]
-  }
-  renderChart()
-}
+    datasets: [
+      {
+        data: Object.values(categoryMap),
+        backgroundColor: categories.map(
+          (category) => categoryColors[category] || "#cccccc"
+        ),
+      },
+    ],
+  };
+  renderChart();
+};
 
 const renderChart = () => {
   if (chartInstance) {
-    chartInstance.destroy()
+    chartInstance.destroy();
   }
 
   chartInstance = new Chart(chartCanvas.value, {
-    type: 'pie',
+    type: "pie",
     data: chartData.value,
     options: {
       plugins: {
-        legend: { display: true }
-      }
-    }
-  })
-}
+        legend: { display: true },
+      },
+    },
+  });
+};
 
-const changeMonth = (delta) => { // 월변경
-  selectedMonth.value += delta
+const changeMonth = (delta) => {
+  // 월변경
+  selectedMonth.value += delta;
   if (selectedMonth.value === 0) {
-    selectedMonth.value = 12
-    selectedYear.value -= 1
+    selectedMonth.value = 12;
+    selectedYear.value -= 1;
   } else if (selectedMonth.value === 13) {
-    selectedMonth.value = 1
-    selectedYear.value += 1
+    selectedMonth.value = 1;
+    selectedYear.value += 1;
   }
-}
+};
 
 const addTransaction = () => {
-  console.log('거래 추가 화면으로 이동!')
-}
+  console.log("거래 추가 화면으로 이동!");
+};
 
-onMounted(fetchTransactions)
-
-watch([selectedYear, selectedMonth, type], updateChartData)
-
+watch([selectedYear, selectedMonth, type], updateChartData);
 </script>
 
 <style scoped>
 .container {
   width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 16px;
   background: #fdfaf3;
-  font-family: sans-serif;
   text-align: center;
   position: relative;
-  min-height: 50vh;
-  box-sizing: border-box;
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  color: #308f92;
-}
-
-.logo img {
-  width: 32px;
-  margin-right: 8px;
-}
-
-.title {
-  margin: 16px 0;
+  min-height: 100vh;
 }
 
 .month-selector {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  font-size: 24px;
+  margin-bottom: 25px;
 }
 
 .month-selector button {
-  background: none;
-  border: none;
-  font-size: 18px;
   cursor: pointer;
 }
 
@@ -212,11 +204,13 @@ watch([selectedYear, selectedMonth, type], updateChartData)
 
 .toggle-buttons button {
   flex: 1;
-  padding: 8px;
-  border: 1px solid #308f92;
+  height: 50px;
+  font-size: 20px;
+  border: 2px solid var(--teal);
   background: white;
-  color: #308f92;
-  border-radius: 4px;
+  color: var(--teal);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
   cursor: pointer;
 }
 

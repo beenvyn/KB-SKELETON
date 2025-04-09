@@ -12,18 +12,17 @@ const goToRecord = () => {
 </script>
 <style scoped>
 .circle {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background-color: var(--teal);
 
-  font-size: 60px;
+  font-size: 55px;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: var(--shadow);
-
   cursor: pointer;
 }
 </style>
