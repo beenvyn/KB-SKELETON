@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <!-- Title -->
-    <h2 class="title">기록하기</h2>
+    <Title text="기록하기" />
 
     <!-- Type Toggle -->
     <div class="toggle-buttons">
@@ -43,9 +42,17 @@
 
       <div class="form-group">
         <label>카테고리 <span class="required">*</span></label>
-        <input v-model="formData.category" type="text" required />
+        <select v-model="formData.category" required>
+          <option value="">카테고리를 선택하세요</option>
+          <option
+            v-for="(category, idx) in categoryOptions"
+            :key="idx"
+            :value="category"
+          >
+            {{ category }}
+          </option>
+        </select>
       </div>
-
       <div class="form-group">
         <label>메모</label>
         <textarea v-model="formData.memo"></textarea>
@@ -59,7 +66,7 @@
             :class="{ active: formData.evaluation === 'great' }"
             @click="formData.evaluation = 'great'"
           >
-            <img src="@/assets/smile.svg" alt="great" class="evaluation-img" />
+            <img src="@/assets/great.svg" alt="great" class="evaluation-img" />
             <!-- 😊 -->
             GREAT
           </button>
@@ -68,7 +75,11 @@
             :class="{ active: formData.evaluation === 'stupid' }"
             @click="formData.evaluation = 'stupid'"
           >
-            <img src="@/assets/frown.svg" alt="stupid" class="evaluation-img" />
+            <img
+              src="@/assets/stupid.svg"
+              alt="stupid"
+              class="evaluation-img"
+            />
             <!-- 😟  -->
             STUPID
           </button>
@@ -82,31 +93,73 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import Title from '../components/common/Title.vue';
 
 const router = useRouter();
 const BASE_URL = '/api';
 
+// 오늘 날짜
 function getTodayDate() {
-  // 오늘 날짜 포맷
   const date = new Date();
+  console.log('🚀 ~ getTodayDate ~ date:', date);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
+// 지금 시간
+function getNowTime() {
+  const date = new Date();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+const userId = localStorage.getItem('userId');
+
+const incomeCategories = [
+  '알바비',
+  '용돈',
+  '장학금',
+  '투자 수익',
+  '공모전 상금',
+  '기타',
+];
+
+const expenseCategories = [
+  '저축/투자',
+  '식비',
+  '교통',
+  '통신비',
+  '교육',
+  '병원',
+  '문화생활',
+  '미용/패션',
+  '경조사',
+];
+
 const formData = reactive({
-  userId: 1, // 기본
+  userId: parseInt(userId),
   type: 'income', // 수입 기본
   title: '',
   date: getTodayDate(),
-  time: '',
+  time: getNowTime(),
   amount: null,
   category: '',
   memo: '',
   evaluation: '',
+});
+
+// type에 따라서 보여줄 카테고리 다르게
+const categoryOptions = computed(() => {
+  if (formData.type === 'income') {
+    return incomeCategories;
+  } else if (formData.type === 'expense') {
+    return expenseCategories;
+  }
 });
 
 async function submitForm() {
@@ -114,6 +167,11 @@ async function submitForm() {
 
   try {
     const transactionUrl = BASE_URL + '/transactions';
+
+    if (formData.amount === 0) return alert('유효한 금액을 입력해주세요.');
+
+    if (formData.type == 'expense' && !formData.evaluation)
+      return alert('지출의 평가를 해주세요.');
 
     const todoRes = await axios.post(transactionUrl, formData);
     console.log('기록하기 통신 결과', todoRes);
@@ -156,17 +214,18 @@ async function submitForm() {
 .toggle-buttons {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .toggle-buttons button {
   flex: 1;
-  padding: 8px;
+  padding: 12px;
   border: 1px solid #308f92;
   background: white;
   color: #308f92;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 18px;
 }
 
 .toggle-buttons button.active {
@@ -188,6 +247,7 @@ async function submitForm() {
 }
 
 input,
+select,
 textarea {
   width: 100%;
   padding: 8px;
