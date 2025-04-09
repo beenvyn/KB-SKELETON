@@ -1,25 +1,18 @@
 <template>
   <div class="wrapper">
     <i class="fa-solid fa-bars" @click="toggleSidebar" />
-    <img
-      class="logo"
-      :src="logo"
-      alt="logo"
-      @click="goToMain"
-      style="cursor: pointer"
-    />
+    <img class="logo" :src="logo" alt="logo" @click="goToMain" />
     <div v-if="isOpen" class="overlay" @click="toggleSidebar"></div>
     <Sidebar :visible="isOpen" @navigate="handleNavigate" />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 import logo from "../../assets/logo.svg";
 import Sidebar from "./Sidebar.vue";
-
 
 const router = useRouter();
 const isOpen = ref(false);
@@ -34,7 +27,7 @@ const handleNavigate = (page) => {
 };
 
 const goToMain = () => {
-  router.push({ name: 'main' });
+  router.push({ name: "main" });
 };
 </script>
 
@@ -55,6 +48,10 @@ const goToMain = () => {
   cursor: pointer;
 }
 
+.wrapper img {
+  cursor: pointer;
+}
+
 .hamburger {
   position: absolute;
   left: 16px;
@@ -69,7 +66,6 @@ const goToMain = () => {
   transform: translateX(-50%);
   width: 140px;
   height: auto;
-  pointer-events: none;
 }
 
 .overlay {
