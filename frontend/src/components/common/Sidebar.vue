@@ -22,7 +22,7 @@
       <div class="not-logged-in">
         <p class="notice-text">로그인이 필요합니다</p>
         <button class="login-button" @click="router.push('/login')">
-          로그인 하러 가기
+          로그인
         </button>
       </div>
     </template>
@@ -118,5 +118,18 @@ const logout = () => {
 
 .menu-item:hover {
   background: #f4f4f4;
+}
+.login-button {
+  background: #308f92;
+  color: white;
+  border-radius: 9px;
+  padding: 7px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+}
+
+.login-button:hover {
+  background: #266d72;
 }
 </style>
