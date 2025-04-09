@@ -56,7 +56,7 @@ async function login() {
       return alert('비밀번호가 일치하지 않습니다.');
 
     localStorage.setItem('auth', 'true');
-    localStorage.setItem('userId', findUser.id); // userId 저장
+    // localStorage.setItem('userId', findUser.id); // userId 저장
     alert('로그인 성공!');
 
     return router.push({ name: 'main' });
