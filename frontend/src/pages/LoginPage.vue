@@ -73,6 +73,7 @@ async function login() {
     }
 
     localStorage.setItem('auth', 'true');
+    // localStorage.setItem('userId', findUser.id); // userId 저장
     alert('로그인 성공!');
     router.push({ name: 'main' });
   } catch (e) {

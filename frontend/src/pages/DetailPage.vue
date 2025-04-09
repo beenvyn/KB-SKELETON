@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="container py-4" style="background: #fdfaf3; min-height: 100vh;">
     <!-- Header -->
-    <header class="header">
+    <header class="header d-flex justify-content-between align-items-center">
       <div class="header-top">
         <h2>{{ today }}</h2>
         <p>오늘 총 <span class="highlight">{{ totalAmount.toLocaleString() }}원</span> 썼어요</p>
@@ -21,11 +21,14 @@
         <div class="timeline-dot" />
         <div class="timeline-content">
           <h3>{{ item.title }}</h3>
-          <div class="details">
+          <div class="details d-flex gap-2 text-muted small mb-2">
             <span>{{ item.amount.toLocaleString() }}원</span>
             <span>{{ item.time }}</span>
           </div>
-          <button class="memo-button" @click="goToRecordPage(item.id)">메모하기</button>
+          <button class="btn btn-outline-secondary btn-sm memo-button" @click="goToRecordPage(item.id)">
+            메모하기
+          </button>
+        
         </div>
       </div>
     </div>
@@ -39,7 +42,7 @@ import axios from 'axios'
 
 const today = ref(formatDate(new Date()))
 const router = useRouter() 
-const transactions = ref([]) // ✅ 거래 내역 저장할 변수 선언!4
+const transactions = ref([]) // 거래 내역 저장할 변수 선언
 const totalAmount = computed(() => {
   return transactions.value.reduce((sum, item) => sum + item.amount, 0)
 })
@@ -60,9 +63,14 @@ function getTodayDate() { // 오늘 날짜 포맷
 }
 
 
-const userId = '1' //  유저 ID (지금은 1번 사용자로 임시 설정)
+const userId = localStorage.getItem('userId'); //  유저 ID 받아옴
 
 onMounted(async () => {
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    router.push({ name: 'login' }); // 로그인 페이지로 이동
+    return;
+  }
   try {
     const todayString = getTodayDate()
     const res = await axios.get(`http://localhost:3000/transactions?userId=${userId}&date=${todayString}`)
@@ -78,17 +86,6 @@ const goToRecordPage = (id) => {
 </script>
 
 <style scoped>
-.container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0;
-  font-family: sans-serif;
-  background: #fdfaf3;
-  padding: 20px;
-  box-sizing: border-box; 
-  min-height: 100vh; 
-}
-
 .header {
   background: #308f92;
   color: white;
@@ -149,4 +146,11 @@ const goToRecordPage = (id) => {
   border-radius: 6px;
   cursor: pointer;
 }
+.memo-button:hover {
+  background-color: #308f92;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
 </style>
