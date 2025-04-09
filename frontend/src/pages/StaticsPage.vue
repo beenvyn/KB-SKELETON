@@ -24,6 +24,7 @@
 import { ref, onMounted, watch } from "vue";
 import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 import Title from "../components/common/Title.vue";
 import AddButton from "../components/common/AddButton.vue";
@@ -40,8 +41,7 @@ const selectedMonth = ref(4);
 const type = ref("income");
 const transactions = ref([]);
 
-const expenseCategoryColors = {
-  // 지출 카테고리 색상
+const expenseCategoryColors = {  // 지출 카테고리 색상
   "저축/투자": "#4bc0c0",
   식비: "#ffcd56",
   교통: "#36a2eb",
@@ -53,8 +53,7 @@ const expenseCategoryColors = {
   경조사: "#C9CBCF",
 };
 
-const incomeCategoryColors = {
-  // 수입 카테고리 색상
+const incomeCategoryColors = {  // 수입 카테고리 색상
   알바비: "#4bc0c0",
   용돈: "#FFCD56",
   장학금: "#36a2eb",
@@ -81,10 +80,23 @@ const chartData = ref({
   ],
 });
 
+const router = useRouter();
+
+onMounted(async () => {
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    await router.push({ name: "login" });
+    return; 
+  }
+  await fetchTransactions(userId);
+});
+
+
+
 // 전체 거래 내역 가져오기
-const fetchTransactions = async () => {
+const fetchTransactions = async (userId) => {
   try {
-    const response = await axios.get("http://localhost:3000/transactions");
+    const response = await axios.get(`http://localhost:3000/transactions?userId=${userId}`);
     transactions.value = response.data;
     console.log("전체 거래 내역:", transactions.value);
     updateChartData();
@@ -159,8 +171,6 @@ const changeMonth = (delta) => {
 const addTransaction = () => {
   console.log("거래 추가 화면으로 이동!");
 };
-
-onMounted(fetchTransactions);
 
 watch([selectedYear, selectedMonth, type], updateChartData);
 </script>
