@@ -60,7 +60,9 @@ const goTo = (page) => {
 const logout = () => {
   localStorage.removeItem('userId');
   localStorage.removeItem('userName');
-  router.push('/login');
+  router.push('/login').then(() => {
+    location.reload(); // 새로고침
+  });
 };
 </script>
 
