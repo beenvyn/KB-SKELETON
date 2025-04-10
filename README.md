@@ -1,5 +1,10 @@
 # KB-SKELETON
 ### 
+[SSook 서비스로 이동](https://kb-ssook.netlify.app/)
+
+<img width="509" alt="image" src="https://github.com/user-attachments/assets/c91dfa96-0529-4307-9818-87598ad1e85b" />
+<img width="482" alt="image" src="https://github.com/user-attachments/assets/2b3551d9-9177-43d3-bad0-2dff99105ae4" />
+
 
 ### Flow chart
 ![수정이가수정 drawio](https://github.com/user-attachments/assets/155c5756-7b15-4523-a909-4fe56bdf6e9c)
