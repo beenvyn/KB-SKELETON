@@ -115,11 +115,14 @@ const selectedYear = ref(2025);
 const selectedMonth = ref(4);
 
 const transactions = ref([]);
-const userId = ref(1);
+
+const userData = JSON.parse(window.localStorage.getItem('user'));
+const userId = ref(parseInt(userData.id));
 
 // 데이터 가져오기
 const fetchTransactions = async () => {
   const res = await axios.get(`${transactionUrl}?userId=${userId.value}`);
+  console.log(res.data);
   transactions.value = res.data.filter(
     (t) =>
       t.userId === userId.value &&

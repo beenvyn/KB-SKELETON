@@ -27,7 +27,9 @@
         <div class="timeline-content">
           <h3>{{ item.title }}</h3>
           <div class="details d-flex gap-2 text-muted small mb-2">
-            <span>{{ item.amount.toLocaleString() }}원</span>
+            <span :class="item.type === 'income' ? 'green' : 'red'">
+              {{ item.amount.toLocaleString() }}원
+            </span>
             <span>{{ item.time }}</span>
           </div>
           <button
@@ -92,7 +94,7 @@ onMounted(async () => {
     return;
   }
 
-  const todayString = route.query.date || getTodayDate();;  // 쿼리에서 날짜 가져오기
+  const todayString = route.query.date || getTodayDate(); // 쿼리에서 날짜 가져오기
   const dateObj = new Date(todayString);
   today.value = formatDate(dateObj);
 
@@ -188,5 +190,13 @@ const goToRecordPage = (id) => {
   color: white;
   transform: translateY(-2px);
   box-shadow: var(--shadow);
+}
+
+.green {
+  color: #00935c;
+}
+
+.red {
+  color: #d23f3f;
 }
 </style>

@@ -98,35 +98,6 @@ const BASE_URL = '/api';
 const isEditMode = ref(false); // 수정 모드 여부
 const transactionId = route.query.transactionId; // 수정 모드인지 판단
 
-const userId = localStorage.getItem('userId');
-
-const incomeCategories = [
-  '알바비', '용돈', '장학금', '투자 수익', '공모전 상금', '기타',
-];
-
-const expenseCategories = [
-  '저축/투자', '식비', '교통', '통신비', '교육', '병원', '문화생활',
-  '미용/패션', '경조사',
-];
-
-function getTodayDate() {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-function getNowTime() {
-  const date = new Date();
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  return `${hours}:${minutes}`;
-}
-
-const userData = JSON.parse(window.localStorage.getItem('user'));
-const userId = userData.id;
-
 const incomeCategories = [
   '알바비',
   '용돈',
@@ -148,6 +119,24 @@ const expenseCategories = [
   '경조사',
 ];
 
+function getTodayDate() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getNowTime() {
+  const date = new Date();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+const userData = JSON.parse(window.localStorage.getItem('user'));
+const userId = userData.id;
+
 const formData = reactive({
   userId: parseInt(userId),
   type: 'income',
@@ -164,7 +153,8 @@ const categoryOptions = computed(() => {
   return formData.type === 'income' ? incomeCategories : expenseCategories;
 });
 
-async function fetchTransactionData(id) { // 정일 때 데이터 불러오기
+async function fetchTransactionData(id) {
+  // 정일 때 데이터 불러오기
   try {
     const res = await axios.get(`${BASE_URL}/transactions/${id}`);
     const data = res.data;
@@ -205,7 +195,8 @@ async function submitForm() {
   }
 }
 
-onMounted(() => { // 페이지 로드시 수정 모드 판단
+onMounted(() => {
+  // 페이지 로드시 수정 모드 판단
   if (transactionId) {
     isEditMode.value = true;
     fetchTransactionData(transactionId);
