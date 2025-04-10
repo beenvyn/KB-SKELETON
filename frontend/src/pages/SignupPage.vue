@@ -93,12 +93,12 @@
 </template>
 
 <script setup>
-import axios from "axios";
-import { reactive, computed } from "vue";
-import { useRouter } from "vue-router";
+import axios from 'axios';
+import { reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
 
-import Title from "../components/common/Title.vue";
-import logoImg from "@/assets/logo-img.svg";
+import Title from '../components/common/Title.vue';
+import logoImg from '@/assets/logo-img.svg';
 
 const router = useRouter();
 
@@ -108,14 +108,14 @@ const years = computed(() =>
 );
 
 const form = reactive({
-  userId: "",
-  password: "",
-  confirmPassword: "",
-  name: "",
-  gender: "",
-  birthYear: "",
-  birthMonth: "",
-  birthDay: "",
+  userId: '',
+  password: '',
+  confirmPassword: '',
+  name: '',
+  gender: '',
+  birthYear: '',
+  birthMonth: '',
+  birthDay: '',
 });
 
 const daysInMonth = computed(() => {
@@ -128,30 +128,30 @@ const daysInMonth = computed(() => {
 
 const submitForm = async () => {
   if (form.password !== form.confirmPassword) {
-    alert("비밀번호가 일치하지 않습니다!");
+    alert('비밀번호가 일치하지 않습니다!');
     return;
   }
 
   const birth = `${form.birthYear}-${String(form.birthMonth).padStart(
     2,
-    "0"
-  )}-${String(form.birthDay).padStart(2, "0")}`;
+    '0'
+  )}-${String(form.birthDay).padStart(2, '0')}`;
 
   const userData = {
     username: form.userId,
     password: form.password,
     name: form.name,
-    gender: form.gender === "male" ? "M" : "F",
+    gender: form.gender === 'male' ? 'M' : 'F',
     birth,
   };
 
   try {
-    const response = await axios.post("/api/users", userData);
-    alert("회원가입이 완료되었습니다!");
-    console.log("서버 응답:", response.data);
-    router.push({ name: "main" });
+    const response = await axios.post('/api/users', userData);
+    alert('회원가입이 완료되었습니다!');
+    console.log('서버 응답:', response.data);
+    router.push({ name: 'main' });
   } catch (e) {
-    alert("통신 오류 발생");
+    alert('통신 오류 발생');
     console.error(e);
   }
 };
@@ -160,9 +160,13 @@ const submitForm = async () => {
 <style scoped>
 .container {
   width: 100%;
-  height: 100vh;
-  background-color: var(--beige);
-  padding-top: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  font-family: sans-serif;
+  background: #fdfaf3;
+  padding: 20px;
+  position: relative;
+  min-height: 100vh;
 }
 
 header {

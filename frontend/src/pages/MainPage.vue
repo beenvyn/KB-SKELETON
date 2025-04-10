@@ -12,16 +12,16 @@
         </div>
       </div>
     </section>
-        <div class="summary-wrap">
-  <div class="summary-box">
-      <div>이번달 총 수입</div>
-      <div class="amount">{{ user.totalIncome.toLocaleString() }}원</div>
+    <div class="summary-wrap">
+      <div class="summary-box">
+        <div>이번달 총 수입</div>
+        <div class="amount">{{ user.totalIncome.toLocaleString() }}원</div>
+      </div>
+      <div class="summary-box">
+        <div>이번달 총 지출</div>
+        <div class="amount">{{ user.totalExpense.toLocaleString() }}원</div>
+      </div>
     </div>
-    <div class="summary-box">
-      <div>이번달 총 지출</div>
-      <div class="amount">{{ user.totalExpense.toLocaleString() }}원</div>
-    </div>
-  </div>
     <section class="ledger-section">
       <h3 class="my-expense-title">나의 가계부</h3>
 
@@ -55,6 +55,7 @@ const BASE_URL = '/api';
 
 const user = ref({
   totalExpense: 0,
+  totalIncome: 0,
 });
 
 function getAgeGroup(birth) {
@@ -71,7 +72,7 @@ function getAgeGroup(birth) {
 async function getUserTotalIncome() {
   try {
     const res = await axios.get(
-      BASE_URL + `/transactions?userId=${userId}&type=income`
+      BASE_URL + `/transactions?userId=${userStore.id}&type=income`
     );
     console.log('총 수입 통신 결과', res);
 
@@ -147,6 +148,7 @@ const goTo = (page) => {
 };
 
 getUserTotalExpense();
+getUserTotalIncome();
 </script>
 
 <style scoped>
@@ -206,8 +208,8 @@ getUserTotalExpense();
 .summary-wrap {
   display: flex;
   justify-content: space-between;
-  position: absolute; 
-  top: 210px; 
+  position: absolute;
+  top: 210px;
   left: 50%;
   transform: translateX(-50%);
   width: 550px;
@@ -236,7 +238,6 @@ getUserTotalExpense();
 .ledger-section {
   margin-top: 80px;
 }
-
 
 .my-expense-title {
   font-size: 30px;
