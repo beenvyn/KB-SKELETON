@@ -1,17 +1,20 @@
 <template>
-  <div class="container py-4" style="background: #fdfaf3; min-height: 100vh;">
+  <div class="container py-4" style="background: #fdfaf3; min-height: 100vh">
     <!-- Header -->
     <header class="header d-flex justify-content-between align-items-center">
       <div class="header-top">
-        <h2>{{ today }}</h2>
-        <p>오늘 총 <span class="highlight">{{ totalAmount.toLocaleString() }}원</span> 썼어요</p>
+        <h1>{{ today }}</h1>
+        <p>
+          오늘 총
+          <span class="highlight">{{ totalAmount.toLocaleString() }}원</span>
+          썼어요
+        </p>
       </div>
       <div class="header-icon">
-        😊
+        <img :src="evaluationIcon" alt="기분 아이콘" />
       </div>
     </header>
 
-    <!-- Timeline -->
     <div class="timeline">
       <div
         v-for="(item, index) in transactions"
@@ -25,10 +28,13 @@
             <span>{{ item.amount.toLocaleString() }}원</span>
             <span>{{ item.time }}</span>
           </div>
-          <button class="btn btn-outline-secondary btn-sm memo-button" @click="goToRecordPage(item.id)">
+          <button
+            v-if="!item.memo"
+            class="btn btn-outline-secondary btn-sm memo-button"
+            @click="goToRecordPage(item.id)"
+          >
             메모하기
           </button>
-        
         </div>
       </div>
     </div>
@@ -36,58 +42,77 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { ref, onMounted, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
 
-const today = ref(formatDate(new Date()))
-const router = useRouter() 
-const transactions = ref([]) // 거래 내역 저장할 변수 선언
+import smile from "@/assets/smile.svg";
+import frown from "@/assets/frown.svg";
+
+const BASE_URL = "/api";
+const transactionUrl = BASE_URL + "/transactions";
+
+const today = ref(formatDate(new Date()));
+const router = useRouter();
+const route = useRoute();
+
+const evaluationIcon = ref(smile); // 기본 아이콘
+
+const updateEvaluationIcon = () => {
+  if (transactions.value.length === 0) return;
+
+  const goodCount = transactions.value.filter(
+    (item) => item.evaluation === "good"
+  ).length;
+  const ratio = goodCount / transactions.value.length;
+
+  evaluationIcon.value = ratio >= 0.5 ? smile : frown;
+};
+
+const transactions = ref([]); // 거래 내역 저장할 변수 선언
 const totalAmount = computed(() => {
-  return transactions.value.reduce((sum, item) => sum + item.amount, 0)
-})
+  return transactions.value.reduce((sum, item) => sum + item.amount, 0);
+});
 
 function formatDate(date) {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  return `${year}년 ${month}월 ${day}일`
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${year}년 ${month}월 ${day}일`;
 }
-
-function getTodayDate() { // 오늘 날짜 포맷
-  const date = new Date()
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
-}
-
-
-const userId = localStorage.getItem('userId'); //  유저 ID 받아옴
 
 onMounted(async () => {
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem("userId");
   if (!userId) {
-    router.push({ name: 'login' }); // 로그인 페이지로 이동
+    router.push({ name: "login" });
     return;
   }
+
+  // 쿼리에서 날짜 가져오기
+  const todayString = route.query.date;
+  const dateObj = new Date(todayString);
+  today.value = formatDate(dateObj);
+
   try {
-    const todayString = getTodayDate()
-    const res = await axios.get(`http://localhost:3000/transactions?userId=${userId}&date=${todayString}`)
-    transactions.value = res.data.filter(item => item.type === 'expense')
-    console.log('오늘의 거래 내역:', transactions.value)
+    const res = await axios.get(
+      `${transactionUrl}?userId=${userId}&date=${todayString}`
+    );
+    transactions.value = res.data.filter((item) => item.type === "expense");
+    updateEvaluationIcon();
+    console.log("해당 날짜의 거래 내역:", transactions.value);
   } catch (error) {
-    console.error('API 호출 실패:', error)
+    console.error("API 호출 실패:", error);
   }
-})
+});
+
 const goToRecordPage = (id) => {
-  router.push({ path: '/record', query: { transactionId: id } })
-}
+  router.push({ path: "/record", query: { transactionId: id } });
+};
 </script>
 
 <style scoped>
 .header {
-  background: #308f92;
+  background: var(--teal);
   color: white;
   border-radius: 8px;
   padding: 16px;
@@ -96,17 +121,23 @@ const goToRecordPage = (id) => {
   align-items: center;
 }
 
-.header-top h2 {
+.header-top h1 {
   margin: 0;
+  font-size: 40px;
+  font-family: Gmarket;
+}
+
+.header-top p {
+  font-size: 20px;
 }
 
 .highlight {
-  color: #DEA94B;
+  color: var(--orange);
 }
 
 .timeline {
   margin-top: 20px;
-  border-left: 3px solid #DEA94B;
+  border-left: 3px solid #dea94b;
   padding-left: 16px;
 }
 
@@ -118,21 +149,19 @@ const goToRecordPage = (id) => {
 .timeline-dot {
   width: 12px;
   height: 12px;
-  background: #DEA94B;
+  background: #dea94b;
   border-radius: 50%;
   position: absolute;
   left: -24px;
   top: 5px;
 }
 
-.timeline-content h3 {
-  margin: 0;
-  font-size: 16px;
+.timeline-content {
+  font-size: 20px;
 }
 
 .details {
-  font-size: 14px;
-  color: #555;
+  color: rgba(0, 0, 0, 0.5);
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
@@ -141,16 +170,17 @@ const goToRecordPage = (id) => {
 .memo-button {
   background: white;
   border: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 6px 12px;
-  border-radius: 6px;
+  box-shadow: var(--shadow);
+  padding: 8px 25px;
+  border-radius: 10px;
+  font-size: 18px;
   cursor: pointer;
 }
+
 .memo-button:hover {
-  background-color: #308f92;
+  background-color: var(--teal);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow);
 }
-
 </style>

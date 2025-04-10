@@ -38,7 +38,12 @@
       <span>{{ selectedYear }}년 {{ selectedMonth }}월</span>
       <img :src="right" @click="changeMonth(1)" />
     </div>
-    <section v-for="(items, day) in groupedByDay" :key="day">
+    <section
+      v-for="(items, day) in groupedByDay"
+      :key="day"
+      @click="goToDetail(day)"
+      class="clickable-section"
+    >
       <div class="top">
         <p class="day">{{ day }}일</p>
         <p class="green">
@@ -167,6 +172,13 @@ const toggleDropdown = () => {
 
 const goBack = () => {
   router.go(-1);
+};
+
+const goToDetail = (day) => {
+  const formattedMonth = selectedMonth.value.toString().padStart(2, "0");
+  const formattedDay = day.toString().padStart(2, "0");
+  const dateString = `${selectedYear.value}-${formattedMonth}-${formattedDay}`;
+  router.push({ name: "detail", query: { date: dateString } });
 };
 
 onMounted(fetchTransactions);
@@ -366,5 +378,14 @@ li p {
 li p:last-child {
   white-space: nowrap;
   font-weight: bold;
+}
+
+.clickable-section {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickable-section:hover {
+  background-color: #f3f3f3;
 }
 </style>

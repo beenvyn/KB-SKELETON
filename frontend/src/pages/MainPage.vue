@@ -24,7 +24,7 @@
 
     <!-- My Ledger -->
     <section class="ledger-section">
-      <h3 style="font-size: 24px">나의 가계부</h3>
+      <h3 class="my-expense-title">나의 가계부</h3>
 
       <div class="menu-list">
         <div class="menu-item" @click="goTo('list')">
@@ -213,6 +213,11 @@ getUserTotalExpense();
   margin-top: 84px;
 }
 
+.my-expense-title {
+  font-size: 24px;
+  font-family: Gmarket;
+}
+
 .menu-list {
   margin-top: 12px;
 }
@@ -228,6 +233,7 @@ getUserTotalExpense();
   margin-bottom: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  font-size: 20px;
 }
 
 .fab {
