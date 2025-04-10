@@ -6,7 +6,9 @@
         <h1>{{ today }}</h1>
         <p>
           오늘 총
-          <span class="highlight">{{ totalAmount.toLocaleString() }}원</span>
+          <span class="highlight"
+            >{{ totalExpenseAmount.toLocaleString() }}원</span
+          >
           썼어요
         </p>
       </div>
@@ -68,9 +70,10 @@ const updateEvaluationIcon = () => {
   evaluationIcon.value = ratio >= 0.5 ? smile : frown;
 };
 
-const transactions = ref([]); // 거래 내역 저장할 변수 선언
-const totalAmount = computed(() => {
-  return transactions.value.reduce((sum, item) => sum + item.amount, 0);
+const transactions = ref([]); // 전체 거래 내역 저장할 변수 선언
+const expenseTransactions = ref([]); // 지출 거래 내역 저장할 변수 선언
+const totalExpenseAmount = computed(() => {
+  return expenseTransactions.value.reduce((sum, item) => sum + item.amount, 0);
 });
 
 function formatDate(date) {
@@ -98,7 +101,10 @@ onMounted(async () => {
     const res = await axios.get(
       `${transactionUrl}?userId=${userId}&date=${todayString}`
     );
-    transactions.value = res.data.filter((item) => item.type === 'expense');
+    expenseTransactions.value = res.data.filter(
+      (item) => item.type === 'expense'
+    );
+    transactions.value = res.data;
     updateEvaluationIcon();
     console.log('해당 날짜의 거래 내역:', transactions.value);
   } catch (error) {
