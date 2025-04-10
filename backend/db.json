@@ -19,28 +19,28 @@
   ],
   "transactions": [
     {
-      "id": "1",
       "userId": 1,
       "type": "expense",
       "title": "점심",
       "date": "2025-04-08",
       "time": "10:00",
-      "amount": 12000,
+      "amount": 13000,
       "category": "식비",
       "memo": "돈코츠라멘",
-      "evaluation": "great"
+      "evaluation": "great",
+      "id": "1"
     },
     {
-      "id": "2",
       "userId": 1,
+      "type": "expense",
       "title": "커피",
-      "category": "문화생활",
       "date": "2025-04-08",
       "time": "15:00",
       "amount": 4500,
+      "category": "문화생활",
       "memo": "스타벅스",
-      "type": "expense",
-      "evaluation": "good"
+      "evaluation": "stupid",
+      "id": "2"
     },
     {
       "id": "3",
@@ -50,7 +50,7 @@
       "date": "2025-04-09",
       "time": "08:00",
       "amount": 1350,
-      "memo": "출근길",
+      "memo": "",
       "type": "expense",
       "evaluation": "good"
     },
@@ -67,16 +67,16 @@
       "evaluation": "great"
     },
     {
-      "id": "5",
       "userId": 1,
+      "type": "expense",
       "title": "병원 진료",
-      "category": "병원",
       "date": "2025-04-11",
       "time": "11:00",
-      "amount": 50000,
+      "amount": 60000,
+      "category": "병원",
       "memo": "감기 진료",
-      "type": "expense",
-      "evaluation": "normal"
+      "evaluation": "great",
+      "id": "5"
     },
     {
       "id": "6",
@@ -389,6 +389,18 @@
       "category": "식비",
       "memo": "아침 커피 수혈",
       "evaluation": "great"
+    },
+    {
+      "userId": 1,
+      "type": "expense",
+      "title": "스타벅스",
+      "date": "2025-04-10",
+      "time": "09:07",
+      "amount": 4500,
+      "category": "식비",
+      "memo": "말차 슈크림라떼",
+      "evaluation": "great",
+      "id": "6431"
     }
   ]
 }

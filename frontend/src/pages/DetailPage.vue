@@ -34,7 +34,7 @@
             class="btn btn-outline-secondary btn-sm memo-button"
             @click="goToRecordPage(item.id)"
           >
-            메모하기
+            수정하기
           </button>
         </div>
       </div>
@@ -92,8 +92,7 @@ onMounted(async () => {
     return;
   }
 
-  // 쿼리에서 날짜 가져오기
-  const todayString = route.query.date;
+  const todayString = route.query.date || getTodayDate();;  // 쿼리에서 날짜 가져오기
   const dateObj = new Date(todayString);
   today.value = formatDate(dateObj);
 
