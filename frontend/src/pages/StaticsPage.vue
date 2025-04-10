@@ -15,22 +15,20 @@
         지출
       </button>
     </div>
-
     <canvas ref="chartCanvas" />
-    <AddButton />
   </div>
 </template>
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
-import axios from "axios";
-import { useRouter } from "vue-router";
+import { ref, onMounted, watch } from 'vue';
+import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-import Title from "../components/common/Title.vue";
-import AddButton from "../components/common/AddButton.vue";
+import Title from '../components/common/Title.vue';
+import AddButton from '../components/common/AddButton.vue';
 
-import left from "@/assets/chevron-left.svg";
-import right from "@/assets/chevron-right.svg";
+import left from '@/assets/chevron-left.svg';
+import right from '@/assets/chevron-right.svg';
 
 Chart.register(PieController, ArcElement, Tooltip, Legend); // Chart.js 등록
 
@@ -38,28 +36,30 @@ const chartCanvas = ref(null);
 let chartInstance = null;
 const selectedYear = ref(2025);
 const selectedMonth = ref(4);
-const type = ref("income");
+const type = ref('income');
 const transactions = ref([]);
 
-const expenseCategoryColors = {  // 지출 카테고리 색상
-  "저축/투자": "#4bc0c0",
-  식비: "#ffcd56",
-  교통: "#36a2eb",
-  통신비: "#9966FF",
-  교육: "#FF6384",
-  병원: "#FF9F40",
-  문화생활: "#FF6384",
-  "미용/패션": "#FFB1C1",
-  경조사: "#C9CBCF",
+const expenseCategoryColors = {
+  // 지출 카테고리 색상
+  '저축/투자': '#4bc0c0',
+  식비: '#ffcd56',
+  교통: '#36a2eb',
+  통신비: '#9966FF',
+  교육: '#FF6384',
+  병원: '#FF9F40',
+  문화생활: '#FF6384',
+  '미용/패션': '#FFB1C1',
+  경조사: '#C9CBCF',
 };
 
-const incomeCategoryColors = {  // 수입 카테고리 색상
-  알바비: "#4bc0c0",
-  용돈: "#FFCD56",
-  장학금: "#36a2eb",
-  "투자 수익": "#9966FF",
-  "공모전/상금": "#FF6384",
-  기타: "#FF9F40",
+const incomeCategoryColors = {
+  // 수입 카테고리 색상
+  알바비: '#4bc0c0',
+  용돈: '#FFCD56',
+  장학금: '#36a2eb',
+  '투자 수익': '#9966FF',
+  '공모전/상금': '#FF6384',
+  기타: '#FF9F40',
 };
 
 // 차트 데이터
@@ -69,12 +69,12 @@ const chartData = ref({
     {
       data: [],
       backgroundColor: [
-        "#dcbe7f",
-        "#d1f7ec",
-        "#e0f7f4",
-        "#ffcd56",
-        "#4bc0c0",
-        "#36a2eb",
+        '#dcbe7f',
+        '#d1f7ec',
+        '#e0f7f4',
+        '#ffcd56',
+        '#4bc0c0',
+        '#36a2eb',
       ],
     },
   ],
@@ -83,29 +83,29 @@ const chartData = ref({
 const router = useRouter();
 
 onMounted(async () => {
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem('userId');
   if (!userId) {
-    await router.push({ name: "login" });
-    return; 
+    await router.push({ name: 'login' });
+    return;
   }
   await fetchTransactions(userId);
 });
 
-
-
 // 전체 거래 내역 가져오기
 const fetchTransactions = async (userId) => {
   try {
-    const response = await axios.get(`http://localhost:3000/transactions?userId=${userId}`);
+    const response = await axios.get(
+      `http://localhost:3000/transactions?userId=${userId}`
+    );
     transactions.value = response.data;
-    console.log("전체 거래 내역:", transactions.value);
+    console.log('전체 거래 내역:', transactions.value);
     updateChartData();
   } catch (error) {
-    console.error("거래 내역 가져오기 실패:", error);
+    console.error('거래 내역 가져오기 실패:', error);
   }
 };
 const updateChartData = () => {
-  const month = String(selectedMonth.value).padStart(2, "0");
+  const month = String(selectedMonth.value).padStart(2, '0');
   const year = selectedYear.value;
 
   const filtered = transactions.value.filter((item) => {
@@ -124,7 +124,7 @@ const updateChartData = () => {
   const categories = Object.keys(categoryMap);
 
   const categoryColors =
-    type.value === "income" ? incomeCategoryColors : expenseCategoryColors;
+    type.value === 'income' ? incomeCategoryColors : expenseCategoryColors;
 
   chartData.value = {
     labels: categories,
@@ -132,7 +132,7 @@ const updateChartData = () => {
       {
         data: Object.values(categoryMap),
         backgroundColor: categories.map(
-          (category) => categoryColors[category] || "#cccccc"
+          (category) => categoryColors[category] || '#cccccc'
         ),
       },
     ],
@@ -146,7 +146,7 @@ const renderChart = () => {
   }
 
   chartInstance = new Chart(chartCanvas.value, {
-    type: "pie",
+    type: 'pie',
     data: chartData.value,
     options: {
       plugins: {
@@ -169,7 +169,7 @@ const changeMonth = (delta) => {
 };
 
 const addTransaction = () => {
-  console.log("거래 추가 화면으로 이동!");
+  console.log('거래 추가 화면으로 이동!');
 };
 
 watch([selectedYear, selectedMonth, type], updateChartData);
