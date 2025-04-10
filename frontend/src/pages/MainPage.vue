@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <!-- User Info -->
     <section class="user-info">
       <img class="profile-img" src="@/assets/profile.png" alt="프로필 이미지" />
       <div class="user-text">
@@ -16,13 +15,16 @@
         </div>
       </div>
     </section>
-
-    <div class="total-expense">
+        <div class="summary-wrap">
+  <div class="summary-box">
+      <div>이번달 총 수입</div>
+      <div class="amount">{{ user.totalIncome.toLocaleString() }}원</div>
+    </div>
+    <div class="summary-box">
       <div>이번달 총 지출</div>
       <div class="amount">{{ user.totalExpense.toLocaleString() }}원</div>
     </div>
-
-    <!-- My Ledger -->
+  </div>
     <section class="ledger-section">
       <h3 class="my-expense-title">나의 가계부</h3>
 
@@ -56,6 +58,7 @@ const userId = localStorage.getItem('userId');
 const user = ref({
   name: '',
   hashtags: ['', ''],
+  totalIncome: 0,
   totalExpense: 0,
 });
 
@@ -78,6 +81,37 @@ async function getUserInfo() {
     user.value.name = res.data.name;
     user.value.hashtags[0] = `# ${getAgeGroup(res.data.birth)}`;
     user.value.hashtags[1] = `# ${res.data.gender == 'M' ? '남자' : '여자'}`;
+  } catch (e) {
+    alert('통신 에러 발생');
+    console.error(e);
+  }
+}
+async function getUserTotalIncome() {
+  try {
+    const res = await axios.get(
+      BASE_URL + `/transactions?userId=${userId}&type=income`
+    );
+    console.log('총 수입 통신 결과', res);
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    const thisMonthIncome = res.data.filter((item) => {
+      const [year, month] = item.date.split('-');
+      return parseInt(year) === currentYear && parseInt(month) === currentMonth;
+    });
+
+    const totalIncome = thisMonthIncome.reduce((sum, item) => {
+      if (item.amount) {
+        return sum + (item.amount || 0);
+      }
+      return sum;
+    }, 0);
+
+    console.log(`이번 달 총 수입: ${totalIncome.toLocaleString()}원`);
+
+    user.value.totalIncome = totalIncome;
   } catch (e) {
     alert('통신 에러 발생');
     console.error(e);
@@ -131,6 +165,7 @@ const goTo = (page) => {
 };
 
 getUserInfo();
+getUserTotalIncome(); 
 getUserTotalExpense();
 </script>
 
@@ -186,32 +221,40 @@ getUserTotalExpense();
   gap: 8px;
 }
 
-.total-expense {
-  text-align: center;
-  background: white;
-  color: black;
+.summary-wrap {
   display: flex;
   justify-content: space-between;
-  border-radius: 8px;
-  position: absolute;
+  position: absolute; 
+  top: 210px; 
   left: 50%;
   transform: translateX(-50%);
-  top: 210px;
   width: 550px;
-  height: 90px;
+  z-index: 10;
+  gap: 5px;
+}
+
+.summary-box {
+  flex: 1;
+  background: white;
+  color: black;
+  border-radius: 8px;
   padding: 12px 36px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  align-items: center;
+  text-align: center;
   font-size: 20px;
 }
 
 .amount {
   font-weight: bold;
 }
+.amount {
+  font-weight: bold;
+}
 
 .ledger-section {
-  margin-top: 84px;
+  margin-top: 80px;
 }
+
 
 .my-expense-title {
   font-size: 24px;
