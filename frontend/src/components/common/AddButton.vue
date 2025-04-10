@@ -2,12 +2,12 @@
   <div class="circle" @click="goToRecord">+</div>
 </template>
 <script setup>
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
 const goToRecord = () => {
-  router.push("/record");
+  router.push('/record');
 };
 </script>
 <style scoped>
@@ -24,5 +24,6 @@ const goToRecord = () => {
   align-items: center;
   box-shadow: var(--shadow);
   cursor: pointer;
+  z-index: 1000;
 }
 </style>
