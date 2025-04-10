@@ -1,8 +1,6 @@
 <template>
   <div class="container">
     <Title text="기록하기" />
-
-    <!-- Type Toggle -->
     <div class="toggle-buttons">
       <button
         :class="{ active: formData.type === 'income' }"
@@ -17,8 +15,6 @@
         지출
       </button>
     </div>
-
-    <!-- Form -->
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label>제목 <span class="required">*</span></label>
@@ -67,7 +63,6 @@
             @click="formData.evaluation = 'great'"
           >
             <img src="@/assets/great.svg" alt="great" class="evaluation-img" />
-            <!-- 😊 -->
             GREAT
           </button>
           <button
@@ -80,7 +75,6 @@
               alt="stupid"
               class="evaluation-img"
             />
-            <!-- 😟  -->
             STUPID
           </button>
         </div>
@@ -93,24 +87,36 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Title from '../components/common/Title.vue';
 
 const router = useRouter();
+const route = useRoute();
 const BASE_URL = '/api';
 
-// 오늘 날짜
+const isEditMode = ref(false); // 수정 모드 여부
+const transactionId = route.query.transactionId; // 수정 모드인지 판단
+
+const userId = localStorage.getItem('userId');
+
+const incomeCategories = [
+  '알바비', '용돈', '장학금', '투자 수익', '공모전 상금', '기타',
+];
+
+const expenseCategories = [
+  '저축/투자', '식비', '교통', '통신비', '교육', '병원', '문화생활',
+  '미용/패션', '경조사',
+];
+
 function getTodayDate() {
   const date = new Date();
-  console.log('🚀 ~ getTodayDate ~ date:', date);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
-// 지금 시간
 function getNowTime() {
   const date = new Date();
   const hours = String(date.getHours()).padStart(2, '0');
@@ -118,32 +124,9 @@ function getNowTime() {
   return `${hours}:${minutes}`;
 }
 
-const userId = localStorage.getItem('userId');
-
-const incomeCategories = [
-  '알바비',
-  '용돈',
-  '장학금',
-  '투자 수익',
-  '공모전 상금',
-  '기타',
-];
-
-const expenseCategories = [
-  '저축/투자',
-  '식비',
-  '교통',
-  '통신비',
-  '교육',
-  '병원',
-  '문화생활',
-  '미용/패션',
-  '경조사',
-];
-
 const formData = reactive({
   userId: parseInt(userId),
-  type: 'income', // 수입 기본
+  type: 'income',
   title: '',
   date: getTodayDate(),
   time: getNowTime(),
@@ -153,37 +136,57 @@ const formData = reactive({
   evaluation: '',
 });
 
-// type에 따라서 보여줄 카테고리 다르게
 const categoryOptions = computed(() => {
-  if (formData.type === 'income') {
-    return incomeCategories;
-  } else if (formData.type === 'expense') {
-    return expenseCategories;
-  }
+  return formData.type === 'income' ? incomeCategories : expenseCategories;
 });
 
-async function submitForm() {
-  console.log('폼 제출됨', formData);
-
+async function fetchTransactionData(id) { // 정일 때 데이터 불러오기
   try {
-    const transactionUrl = BASE_URL + '/transactions';
+    const res = await axios.get(`${BASE_URL}/transactions/${id}`);
+    const data = res.data;
+    formData.type = data.type;
+    formData.title = data.title;
+    formData.date = data.date;
+    formData.time = data.time;
+    formData.amount = data.amount;
+    formData.category = data.category;
+    formData.memo = data.memo;
+    formData.evaluation = data.evaluation;
+  } catch (error) {
+    console.error('수정 데이터 불러오기 실패:', error);
+    alert('데이터 불러오기 실패');
+  }
+}
+
+async function submitForm() {
+  try {
+    const transactionUrl = `${BASE_URL}/transactions`;
 
     if (formData.amount === 0) return alert('유효한 금액을 입력해주세요.');
-
-    if (formData.type == 'expense' && !formData.evaluation)
+    if (formData.type === 'expense' && !formData.evaluation)
       return alert('지출의 평가를 해주세요.');
 
-    const todoRes = await axios.post(transactionUrl, formData);
-    console.log('기록하기 통신 결과', todoRes);
+    if (isEditMode.value) {
+      await axios.put(`${transactionUrl}/${transactionId}`, formData);
+      alert('수정 완료!');
+    } else {
+      await axios.post(transactionUrl, formData);
+      alert('등록 성공!');
+    }
 
-    // 추가 후 목록으로 이동
-    router.push({ name: 'detail' });
-    alert('등록 성공');
+    router.push({ name: 'detail', query: { date: formData.date } });
   } catch (e) {
     alert('통신 에러 발생');
     console.error(e);
   }
 }
+
+onMounted(() => { // 페이지 로드시 수정 모드 판단
+  if (transactionId) {
+    isEditMode.value = true;
+    fetchTransactionData(transactionId);
+  }
+});
 </script>
 
 <style scoped>
@@ -275,7 +278,7 @@ textarea {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 4px; /* 이미지와 텍스트 사이 간격 */
+  gap: 4px;
 }
 
 .evaluation-buttons button.active {
