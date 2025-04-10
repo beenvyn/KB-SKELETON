@@ -5,7 +5,7 @@
       <p class="title">나의 가계부</p>
       <div class="dropdown">
         <button @click="toggleDropdown" :class="{ active: showDropdown }">
-          {{ selectedCategory || "카테고리별" }}
+          {{ selectedCategory || '카테고리별' }}
         </button>
         <ul v-if="showDropdown" class="dropdown-list">
           <li
@@ -49,7 +49,7 @@
         <p class="green">
           +{{
             items
-              .filter((i) => i.type === "income")
+              .filter((i) => i.type === 'income')
               .reduce((a, c) => a + c.amount, 0)
               .toLocaleString()
           }}원
@@ -57,7 +57,7 @@
         <p class="red">
           -{{
             items
-              .filter((i) => i.type === "expense")
+              .filter((i) => i.type === 'expense')
               .reduce((a, c) => a + c.amount, 0)
               .toLocaleString()
           }}원
@@ -73,36 +73,34 @@
         </li>
       </ul>
     </section>
-
-    <AddButton />
   </div>
 </template>
 
 <script setup>
-import { ref, watch, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
-import axios from "axios";
+import { ref, watch, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 
-import AddButton from "../components/common/AddButton.vue";
+import AddButton from '../components/common/AddButton.vue';
 
-import arrow from "@/assets/arrow-left.svg";
-import left from "@/assets/chevron-left.svg";
-import right from "@/assets/chevron-right.svg";
+import arrow from '@/assets/arrow-left.svg';
+import left from '@/assets/chevron-left.svg';
+import right from '@/assets/chevron-right.svg';
 
-const BASE_URL = "/api";
-const transactionUrl = BASE_URL + "/transactions";
+const BASE_URL = '/api';
+const transactionUrl = BASE_URL + '/transactions';
 
 const categories = [
-  "전체",
-  "저축/투자",
-  "식비",
-  "교통",
-  "통신비",
-  "교육",
-  "병원",
-  "문화생활",
-  "미용/패션",
-  "경조사",
+  '전체',
+  '저축/투자',
+  '식비',
+  '교통',
+  '통신비',
+  '교육',
+  '병원',
+  '문화생활',
+  '미용/패션',
+  '경조사',
 ];
 
 const router = useRouter();
@@ -138,20 +136,20 @@ const groupedByDay = computed(() => {
 
 const income = computed(() =>
   transactions.value
-    .filter((t) => t.type === "income")
+    .filter((t) => t.type === 'income')
     .reduce((acc, cur) => acc + cur.amount, 0)
 );
 
 const expense = computed(() =>
   transactions.value
-    .filter((t) => t.type === "expense")
+    .filter((t) => t.type === 'expense')
     .reduce((acc, cur) => acc + cur.amount, 0)
 );
 
 const total = computed(() => income.value - expense.value);
 
 const selectCategory = (category) => {
-  selectedCategory.value = category === "전체" ? null : category;
+  selectedCategory.value = category === '전체' ? null : category;
   showDropdown.value = false;
 };
 
@@ -175,10 +173,10 @@ const goBack = () => {
 };
 
 const goToDetail = (day) => {
-  const formattedMonth = selectedMonth.value.toString().padStart(2, "0");
-  const formattedDay = day.toString().padStart(2, "0");
+  const formattedMonth = selectedMonth.value.toString().padStart(2, '0');
+  const formattedDay = day.toString().padStart(2, '0');
   const dateString = `${selectedYear.value}-${formattedMonth}-${formattedDay}`;
-  router.push({ name: "detail", query: { date: dateString } });
+  router.push({ name: 'detail', query: { date: dateString } });
 };
 
 onMounted(fetchTransactions);
