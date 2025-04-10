@@ -53,7 +53,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!localStorage.getItem('userId')) {
+    if (!JSON.parse(window.localStorage.getItem('user'))?.id) {
       alert('로그인이 필요합니다.');
       return next({ name: 'login' });
     }

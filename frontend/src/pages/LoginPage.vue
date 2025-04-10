@@ -76,16 +76,10 @@ async function login() {
       return;
     }
 
-    localStorage.setItem('userId', findUser.id); // userId 저장
-    localStorage.setItem('userName', findUser.name); // userId 저장
-
     await getUserInfo(findUser.id);
 
     alert('로그인 성공!');
     router.push({ name: 'main' });
-    // router.push({ name: 'main' }).then(() => {
-    //   location.reload(); // 새로고침
-    // });
   } catch (e) {
     alert('로그인 통신 ERR 발생');
     console.error(e);

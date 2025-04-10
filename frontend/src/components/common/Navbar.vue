@@ -8,12 +8,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import logo from '../../assets/logo.svg';
 import Sidebar from './Sidebar.vue';
-
 
 const router = useRouter();
 const isOpen = ref(false);
@@ -28,7 +27,7 @@ const handleNavigate = (page) => {
 };
 
 const goToMain = () => {
-  router.push({ name: "main" });
+  router.push({ name: 'main' });
 };
 </script>
 

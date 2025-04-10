@@ -118,7 +118,8 @@ function getNowTime() {
   return `${hours}:${minutes}`;
 }
 
-const userId = localStorage.getItem('userId');
+const userData = JSON.parse(window.localStorage.getItem('user'));
+const userId = userData.id;
 
 const incomeCategories = [
   '알바비',
