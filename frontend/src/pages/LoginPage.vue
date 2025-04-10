@@ -13,7 +13,7 @@
       </div>
 
       <input
-        v-model="userId"
+        v-model="username"
         type="text"
         class="form-control custom-input"
         placeholder="아이디 입력"
@@ -39,15 +39,19 @@
 
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, useSSRContext } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
+const { setUserInfo } = userStore;
 
 import logo from '@/assets/logo.svg';
 
 const router = useRouter();
 const BASE_URL = '/api';
 
-const userId = ref('');
+const username = ref('');
 const userPassword = ref('');
 
 async function login() {
@@ -59,7 +63,7 @@ async function login() {
     console.log('유저 데이터 목록 : ', userArr);
 
     const findUser = userArr.find(function (item) {
-      return item.username === userId.value;
+      return item.username === username.value;
     });
 
     if (!findUser) {
@@ -72,15 +76,24 @@ async function login() {
       return;
     }
 
-    localStorage.setItem('userId', findUser.id); // userId 저장
-    localStorage.setItem('userName', findUser.name); // userId 저장
+    await getUserInfo(findUser.id);
 
     alert('로그인 성공!');
-    router.push({ name: 'main' }).then(() => {
-      location.reload(); // 새로고침
-    });
+    router.push({ name: 'main' });
   } catch (e) {
     alert('로그인 통신 ERR 발생');
+    console.error(e);
+  }
+}
+
+async function getUserInfo(userId) {
+  try {
+    const res = await axios.get(BASE_URL + `/users/${userId}`);
+    console.log('유저 정보 가지고 오기 통신 결과 데이터', res.data);
+
+    userStore.setUserInfo(res.data);
+  } catch (e) {
+    alert('통신 에러 발생');
     console.error(e);
   }
 }

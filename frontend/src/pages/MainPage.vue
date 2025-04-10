@@ -3,14 +3,11 @@
     <section class="user-info">
       <img class="profile-img" src="@/assets/profile.png" alt="프로필 이미지" />
       <div class="user-text">
-        <h2 class="user-name">{{ user.name }}</h2>
+        <h2 class="user-name">{{ userStore.name }}</h2>
         <div class="hashtags-array">
-          <p
-            class="hashtags"
-            v-for="(hashtag, idx) in user.hashtags"
-            :key="idx"
-          >
-            {{ hashtag }}
+          <p class="hashtags"># {{ getAgeGroup(userStore.birth) }}</p>
+          <p class="hashtags">
+            # {{ userStore.gender == 'M' ? '남자' : '여자' }}
           </p>
         </div>
       </div>
@@ -48,17 +45,15 @@
 
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
+const userStore = useUserStore();
 const router = useRouter();
 const BASE_URL = '/api';
-const userId = localStorage.getItem('userId');
 
 const user = ref({
-  name: '',
-  hashtags: ['', ''],
-  totalIncome: 0,
   totalExpense: 0,
 });
 
@@ -73,19 +68,6 @@ function getAgeGroup(birth) {
   return `${ageGroup}대`;
 }
 
-async function getUserInfo() {
-  try {
-    const res = await axios.get(BASE_URL + `/users/${userId}`);
-    console.log('유저 정보 가지고 오기 통신 결과 데이터', res.data);
-
-    user.value.name = res.data.name;
-    user.value.hashtags[0] = `# ${getAgeGroup(res.data.birth)}`;
-    user.value.hashtags[1] = `# ${res.data.gender == 'M' ? '남자' : '여자'}`;
-  } catch (e) {
-    alert('통신 에러 발생');
-    console.error(e);
-  }
-}
 async function getUserTotalIncome() {
   try {
     const res = await axios.get(
@@ -121,7 +103,7 @@ async function getUserTotalIncome() {
 async function getUserTotalExpense() {
   try {
     const res = await axios.get(
-      BASE_URL + `/transactions?userId=${userId}&type=expense`
+      BASE_URL + `/transactions?userId=${userStore.id}&type=expense`
     );
     console.log('총 지출 통신 결과', res);
 
@@ -164,8 +146,6 @@ const goTo = (page) => {
   }
 };
 
-getUserInfo();
-getUserTotalIncome(); 
 getUserTotalExpense();
 </script>
 
@@ -208,11 +188,13 @@ getUserTotalExpense();
 .user-name {
   margin: 0;
   color: #eee;
+  font-size: 24px;
 }
 
 .hashtags {
   margin: 4px 0;
   color: #eee;
+  font-size: 20px;
 }
 
 .hashtags-array {
@@ -257,7 +239,7 @@ getUserTotalExpense();
 
 
 .my-expense-title {
-  font-size: 24px;
+  font-size: 30px;
   font-family: Gmarket;
 }
 

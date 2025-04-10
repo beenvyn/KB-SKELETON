@@ -124,6 +124,30 @@ function getNowTime() {
   return `${hours}:${minutes}`;
 }
 
+const userData = JSON.parse(window.localStorage.getItem('user'));
+const userId = userData.id;
+
+const incomeCategories = [
+  '알바비',
+  '용돈',
+  '장학금',
+  '투자 수익',
+  '공모전 상금',
+  '기타',
+];
+
+const expenseCategories = [
+  '저축/투자',
+  '식비',
+  '교통',
+  '통신비',
+  '교육',
+  '병원',
+  '문화생활',
+  '미용/패션',
+  '경조사',
+];
+
 const formData = reactive({
   userId: parseInt(userId),
   type: 'income',

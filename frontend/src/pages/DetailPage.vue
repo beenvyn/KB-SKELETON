@@ -6,7 +6,9 @@
         <h1>{{ today }}</h1>
         <p>
           오늘 총
-          <span class="highlight">{{ totalAmount.toLocaleString() }}원</span>
+          <span class="highlight"
+            >{{ totalExpenseAmount.toLocaleString() }}원</span
+          >
           썼어요
         </p>
       </div>
@@ -41,15 +43,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+import { ref, onMounted, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
-import smile from "@/assets/smile.svg";
-import frown from "@/assets/frown.svg";
+import smile from '@/assets/smile.svg';
+import frown from '@/assets/frown.svg';
 
-const BASE_URL = "/api";
-const transactionUrl = BASE_URL + "/transactions";
+const BASE_URL = '/api';
+const transactionUrl = BASE_URL + '/transactions';
 
 const today = ref(formatDate(new Date()));
 const router = useRouter();
@@ -61,16 +63,17 @@ const updateEvaluationIcon = () => {
   if (transactions.value.length === 0) return;
 
   const goodCount = transactions.value.filter(
-    (item) => item.evaluation === "good"
+    (item) => item.evaluation === 'good'
   ).length;
   const ratio = goodCount / transactions.value.length;
 
   evaluationIcon.value = ratio >= 0.5 ? smile : frown;
 };
 
-const transactions = ref([]); // 거래 내역 저장할 변수 선언
-const totalAmount = computed(() => {
-  return transactions.value.reduce((sum, item) => sum + item.amount, 0);
+const transactions = ref([]); // 전체 거래 내역 저장할 변수 선언
+const expenseTransactions = ref([]); // 지출 거래 내역 저장할 변수 선언
+const totalExpenseAmount = computed(() => {
+  return expenseTransactions.value.reduce((sum, item) => sum + item.amount, 0);
 });
 
 function formatDate(date) {
@@ -81,9 +84,11 @@ function formatDate(date) {
 }
 
 onMounted(async () => {
-  const userId = localStorage.getItem("userId");
+  const userData = JSON.parse(window.localStorage.getItem('user'));
+  const userId = userData.id;
+
   if (!userId) {
-    router.push({ name: "login" });
+    router.push({ name: 'login' });
     return;
   }
 
@@ -95,16 +100,19 @@ onMounted(async () => {
     const res = await axios.get(
       `${transactionUrl}?userId=${userId}&date=${todayString}`
     );
-    transactions.value = res.data.filter((item) => item.type === "expense");
+    expenseTransactions.value = res.data.filter(
+      (item) => item.type === 'expense'
+    );
+    transactions.value = res.data;
     updateEvaluationIcon();
-    console.log("해당 날짜의 거래 내역:", transactions.value);
+    console.log('해당 날짜의 거래 내역:', transactions.value);
   } catch (error) {
-    console.error("API 호출 실패:", error);
+    console.error('API 호출 실패:', error);
   }
 });
 
 const goToRecordPage = (id) => {
-  router.push({ path: "/record", query: { transactionId: id } });
+  router.push({ path: '/record', query: { transactionId: id } });
 };
 </script>
 

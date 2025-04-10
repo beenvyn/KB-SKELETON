@@ -1,20 +1,20 @@
 <template>
   <div class="sidebar" v-if="visible">
     <div class="logo-wrapper">
-      <img :src="logo" alt="logo" class="logo-image" />
+      <img :src="logo" alt="logo" class="logo-image" @click="goTo('main')" />
     </div>
     <!-- 로그인 상태일 때 -->
-    <template v-if="isLoggedIn">
+    <template v-if="userStore.isLoggedIn">
       <div class="user-info">
         <img :src="profile" alt="프로필 이미지" class="profile-image" />
-        <p class="user-name">{{ userName }}</p>
+        <p class="user-name">{{ userStore.name }}</p>
       </div>
       <div class="line" />
       <nav class="menu">
         <p class="menu-item" @click="goTo('main')">메인 페이지</p>
         <p class="menu-item" @click="goTo('expense')">나의 가계부</p>
         <p class="menu-item" @click="goTo('stats')">통계</p>
-        <p class="menu-item" @click="logout">로그아웃</p>
+        <p class="menu-item" @click="handleLogout">로그아웃</p>
       </nav>
     </template>
     <!-- 로그아웃 상태일 때 -->
@@ -33,6 +33,7 @@
 import { ref, onMounted } from 'vue';
 import { defineProps, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
 import logo from '../../assets/logo.svg';
 import profile from '../../assets/profile.png';
@@ -43,26 +44,16 @@ const props = defineProps({
 const emit = defineEmits(['navigate', 'logout']);
 
 const router = useRouter();
-const isLoggedIn = ref(false);
-const userName = ref('');
-
-onMounted(() => {
-  const loginId = localStorage.getItem('userId');
-  const storedUserName = localStorage.getItem('userName');
-  isLoggedIn.value = !!loginId;
-  userName.value = storedUserName || '';
-});
+const userStore = useUserStore();
 
 const goTo = (page) => {
   emit('navigate', page);
 };
 
-const logout = () => {
-  localStorage.removeItem('userId');
-  localStorage.removeItem('userName');
-  router.push('/login').then(() => {
-    location.reload(); // 새로고침
-  });
+const handleLogout = () => {
+  userStore.logout();
+  // localStorage.removeItem('user');`
+  router.push('/login');
 };
 </script>
 
