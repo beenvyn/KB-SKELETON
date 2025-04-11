@@ -2,12 +2,19 @@
 ### 
 [SSook 서비스로 이동](https://kb-ssook.netlify.app/)
 
-<img width="509" alt="image" src="https://github.com/user-attachments/assets/c91dfa96-0529-4307-9818-87598ad1e85b" />
-<img width="482" alt="image" src="https://github.com/user-attachments/assets/2b3551d9-9177-43d3-bad0-2dff99105ae4" />
+<img width="706" alt="image" src="https://github.com/user-attachments/assets/3c3b5d9e-b693-4c26-b8b8-9ac1531a5575" />
 
+
+
+### Project R & R
+<img width="710" alt="image" src="https://github.com/user-attachments/assets/c0fb0aa4-96f2-4871-9c67-bef810dcf540" />
+
+### Tech Stack
+<img width="608" alt="image" src="https://github.com/user-attachments/assets/5e701a72-437c-4cee-a039-b6eb4df45688" />
 
 ### Flow chart
-![수정이가수정 drawio](https://github.com/user-attachments/assets/155c5756-7b15-4523-a909-4fe56bdf6e9c)
+<img width="766" alt="image" src="https://github.com/user-attachments/assets/5e34eb42-b015-418b-92c0-b365a1be99e8" />
+
 
 ### Commit Convention
 | Tag Name   | Description |
